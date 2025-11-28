@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "317198605296",
+    "project_id": "classmate-e1d7f",
+    "storage_bucket": "classmate-e1d7f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317198605296:android:00830a6266a25cbee35b35",
+        "android_client_info": {
+          "package_name": "com.example.classmate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALFVwFkzogHTVy4k2V8crwgdoHnTa7yVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317198605296:android:c8703adefb32a33ae35b35",
+        "android_client_info": {
+          "package_name": "com.example.notes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALFVwFkzogHTVy4k2V8crwgdoHnTa7yVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

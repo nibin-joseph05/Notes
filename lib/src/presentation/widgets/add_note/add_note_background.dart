@@ -11,7 +11,7 @@ class AddNoteBackground extends StatelessWidget {
       children: [
         Positioned.fill(
           child: Image.asset(
-            imagePath ?? "assets/add-note-bg/splash.png",
+            imagePath ?? "assets/add-note-bg/default-bg.png",
             fit: BoxFit.cover,
           ),
         ),
