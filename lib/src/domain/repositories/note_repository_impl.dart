@@ -15,7 +15,7 @@ class NoteRepositoryImpl implements NoteRepository {
       title: note.title,
       body: note.body,
       imageUrl: note.imageUrl,
-      pinned: note.pinned,
+      pinned: note.isPinned,
       createdAt: note.createdAt,
       updatedAt: note.updatedAt,
     );
@@ -28,7 +28,7 @@ class NoteRepositoryImpl implements NoteRepository {
       'title': note.title,
       'body': note.body,
       'imageUrl': note.imageUrl,
-      'pinned': note.pinned,
+      'pinned': note.isPinned,
       'createdAt': note.createdAt.toIso8601String(),
       'updatedAt': note.updatedAt.toIso8601String(),
     });
@@ -42,7 +42,7 @@ class NoteRepositoryImpl implements NoteRepository {
       title: n.title,
       body: n.body,
       imageUrl: n.imageUrl,
-      pinned: n.pinned,
+      isPinned: n.pinned,
       createdAt: n.createdAt,
       updatedAt: n.updatedAt,
     )).toList();

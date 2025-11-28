@@ -3,7 +3,7 @@ class NoteEntity {
   final String title;
   final String body;
   final String? imageUrl;
-  final bool pinned;
+  final bool isPinned;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -11,8 +11,8 @@ class NoteEntity {
     required this.id,
     required this.title,
     required this.body,
-    this.imageUrl,
-    required this.pinned,
+    required this.imageUrl,
+    required this.isPinned,
     required this.createdAt,
     required this.updatedAt,
   });

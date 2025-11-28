@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-class AddNoteBackground extends StatelessWidget {
+class AppBackground extends StatelessWidget {
   final String? imagePath;
 
-  const AddNoteBackground({super.key, this.imagePath});
+  const AppBackground({super.key, this.imagePath});
 
   @override
   Widget build(BuildContext context) {

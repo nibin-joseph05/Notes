@@ -28,22 +28,21 @@ class AddNoteFields extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        Expanded(
-          child: TextField(
-            controller: bodyController,
-            maxLines: null,
-            expands: true,
-            style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w400,
-              color: Colors.white,
-            ),
-            decoration: const InputDecoration(
-              hintText: "Start typing...",
-              border: InputBorder.none,
-            ),
+        TextField(
+          controller: bodyController,
+          maxLines: null,
+          keyboardType: TextInputType.multiline,
+          style: const TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w400,
+            color: Colors.white,
+          ),
+          decoration: const InputDecoration(
+            hintText: "Start typing...",
+            border: InputBorder.none,
           ),
         ),
+
       ],
     );
   }

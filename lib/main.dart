@@ -7,6 +7,7 @@ import 'firebase_options.dart';
 import 'src/core/theme/app_theme.dart';
 import 'src/core/routes/app_router.dart';
 import 'src/core/routes/app_routes.dart';
+import 'src/data/models/note_hive_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +17,7 @@ Future<void> main() async {
   );
 
   await Hive.initFlutter();
+  Hive.registerAdapter(NoteHiveModelAdapter());
   await Hive.openBox('notesBox');
 
   runApp(const ProviderScope(child: NotesApp()));
