@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../../core/routes/app_routes.dart';
 
 class HomeAddButton extends StatelessWidget {
   const HomeAddButton({super.key});
@@ -21,7 +22,9 @@ class HomeAddButton extends StatelessWidget {
       child: FloatingActionButton(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.addNote);
+        },
         child: const Icon(
           FontAwesomeIcons.fileCirclePlus,
           color: Colors.white,

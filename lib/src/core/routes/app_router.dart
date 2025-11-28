@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../presentation/screens/splash/splash_screen.dart';
 import '../../presentation/screens/home/home_screen.dart';
-
-// import '../../presentation/screens/add_note/add_note_screen.dart';
-
+import '../../presentation/screens/add_note/add_note_screen.dart';
 import 'app_routes.dart';
 
 class AppRouter {
@@ -13,8 +11,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SplashPage());
       case AppRoutes.home:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
-      // case AppRoutes.addNote:
-      //   return MaterialPageRoute(builder: (_) => const AddNoteScreen());
+      case AppRoutes.addNote:
+        return MaterialPageRoute(builder: (_) => const AddNoteScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
