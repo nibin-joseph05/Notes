@@ -12,7 +12,7 @@ class AppRouter {
       case AppRoutes.splash:
         return MaterialPageRoute(builder: (_) => const SplashPage());
       case AppRoutes.home:
-        return MaterialPageRoute(builder: (_) => const HomePage());
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
       // case AppRoutes.addNote:
       //   return MaterialPageRoute(builder: (_) => const AddNoteScreen());
       default:

@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../widgets/home/home_header.dart';
+import '../../widgets/home/home_empty_state.dart';
+import '../../widgets/home/home_add_button.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomeScreen extends ConsumerWidget {
+  const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: Text(
-            "Home Page",
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      floatingActionButton: const HomeAddButton(),
+      body: const SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          child: Column(
+            children: [
+              HomeHeader(),
+              SizedBox(height: 110),
+              HomeEmptyState(),
+            ],
           ),
         ),
       ),
