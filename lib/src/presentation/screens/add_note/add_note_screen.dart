@@ -10,7 +10,8 @@ import '../../widgets/add_note/add_note_footer.dart';
 import '../../widgets/common/app_background.dart';
 
 class AddNoteScreen extends ConsumerStatefulWidget {
-  const AddNoteScreen({super.key});
+  final NoteEntity? note;
+  const AddNoteScreen({super.key, this.note});
 
   @override
   ConsumerState<AddNoteScreen> createState() => _AddNoteScreenState();
@@ -21,6 +22,20 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   final TextEditingController bodyCtrl = TextEditingController();
   bool isPinned = false;
   File? selectedImage;
+
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.note != null) {
+      titleCtrl.text = widget.note!.title;
+      bodyCtrl.text = widget.note!.body;
+      isPinned = widget.note!.isPinned;
+      if (widget.note!.imageUrl != null) {
+        selectedImage = File(widget.note!.imageUrl!);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,26 +66,30 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                         final title = titleCtrl.text.trim();
                         final body = bodyCtrl.text.trim();
 
-                        if (title.isEmpty && body.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Note is empty")),
+                        if (widget.note == null) {
+                          final newNote = NoteEntity(
+                            id: DateTime.now().millisecondsSinceEpoch.toString(),
+                            title: title.isEmpty ? "Untitled" : title,
+                            body: body,
+                            isPinned: isPinned,
+                            imageUrl: selectedImage?.path,
+                            createdAt: DateTime.now(),
+                            updatedAt: DateTime.now(),
                           );
-                          return;
+                          ref.read(notesProvider.notifier).addNote(newNote);
+                        } else {
+                          final updatedNote = widget.note!.copyWith(
+                            title: title.isEmpty ? "Untitled" : title,
+                            body: body,
+                            isPinned: isPinned,
+                            imageUrl: selectedImage?.path,
+                            updatedAt: DateTime.now(),
+                          );
+                          ref.read(notesProvider.notifier).addNote(updatedNote);
                         }
 
-                        final note = NoteEntity(
-                          id: DateTime.now().millisecondsSinceEpoch.toString(),
-                          title: title.isEmpty ? "Untitled" : title,
-                          body: body,
-                          isPinned: isPinned,
-                          imageUrl: selectedImage?.path,
-                          createdAt: DateTime.now(),
-                          updatedAt: DateTime.now(),
-                        );
-
-                        ref.read(notesProvider.notifier).addNote(note);
-
                         Navigator.pop(context);
+
                       },
                     ),
 

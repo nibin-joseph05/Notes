@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:notes/src/presentation/screens/add_note/add_note_screen.dart';
 import 'package:notes/src/presentation/widgets/home/home_delete_dialog.dart';
 
 import '../../providers/note_provider.dart';
@@ -57,8 +58,14 @@ class HomeNoteCard extends ConsumerWidget {
                 isPinned: note.isPinned,
                 onEdit: () {
                   Navigator.pop(context);
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AddNoteScreen(note: note),
+                    ),
+                  );
                 },
+
                 onDelete: () {
                   Navigator.pop(context);
                   HapticFeedback.lightImpact();
