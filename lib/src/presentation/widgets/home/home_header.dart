@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../../core/routes/app_routes.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key});
@@ -15,7 +16,13 @@ class HomeHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 18),
       child: Row(
         children: [
-          const Icon(FontAwesomeIcons.bars, size: 22, color: Colors.white70),
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.settings);
+            },
+            child: const Icon(FontAwesomeIcons.bars, size: 22, color: Colors.white70),
+          ),
+
           const SizedBox(width: 12),
           const Expanded(
             child: TextField(
