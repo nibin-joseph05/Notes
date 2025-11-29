@@ -47,10 +47,18 @@ class AddNoteAppBar extends StatelessWidget {
             ),
             child: const Row(
               children: [
-                Icon(Icons.save_alt, size: 18),
+                Icon(Icons.save_alt, size: 18, color: Colors.white),
                 SizedBox(width: 6),
-                Text("Save", style: TextStyle(fontSize: 15)),
+                Text(
+                  "Save",
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ],
+
             ),
           ),
         ),

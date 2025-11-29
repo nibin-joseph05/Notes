@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../providers/settings_provider.dart';
-import 'WallpaperCropScreen.dart';
+import 'settings_wallpaper_crop.dart';
 
 class WallpaperSelectorWidget extends ConsumerWidget {
   const WallpaperSelectorWidget({super.key});

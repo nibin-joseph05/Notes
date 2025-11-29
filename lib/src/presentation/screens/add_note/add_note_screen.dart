@@ -112,10 +112,12 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
 
 
                     AddNoteFooter(
+                      createdAt: widget.note?.createdAt ?? DateTime.now(), // new line
                       onImageSelected: (image) {
                         setState(() => selectedImage = image);
                       },
-                    ),
+                    )
+
                   ],
                 ),
               ),
