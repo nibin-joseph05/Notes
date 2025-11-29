@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/note_provider.dart';
@@ -6,7 +6,6 @@ import '../../widgets/home/home_header.dart';
 import '../../widgets/home/home_empty_state.dart';
 import '../../widgets/home/home_add_button.dart';
 import '../../widgets/common/app_background.dart';
-import 'dart:ui';
 import '../../widgets/home/home_note_card.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -61,14 +60,23 @@ class HomeScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+
+
                               if (pinnedNotes.isNotEmpty) ...[
-                                const Text(
-                                  "📌 Pinned",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
+                                Row(
+                                  children: const [
+                                    Icon(Icons.push_pin_rounded,
+                                        color: Colors.white, size: 22),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      "Pinned",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: 12),
                                 GridView.builder(
@@ -82,30 +90,42 @@ class HomeScreen extends ConsumerWidget {
                                     mainAxisSpacing: 14,
                                     childAspectRatio: aspectRatio(),
                                   ),
-                                  itemBuilder: (_, i) => HomeNoteCard(note: pinnedNotes[i]),
+                                  itemBuilder: (_, i) =>
+                                      HomeNoteCard(note: pinnedNotes[i]),
                                 ),
                                 const SizedBox(height: 30),
                               ],
-                              const Text(
-                                "📝 Notes",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
+
+
+                              Row(
+                                children: const [
+                                  Icon(Icons.notes_rounded,
+                                      color: Colors.white, size: 22),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Notes",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 12),
                               GridView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemCount: normalNotes.length,
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: crossAxisCount(),
                                   crossAxisSpacing: 14,
                                   mainAxisSpacing: 14,
                                   childAspectRatio: aspectRatio(),
                                 ),
-                                itemBuilder: (_, i) => HomeNoteCard(note: normalNotes[i]),
+                                itemBuilder: (_, i) =>
+                                    HomeNoteCard(note: normalNotes[i]),
                               ),
                             ],
                           ),

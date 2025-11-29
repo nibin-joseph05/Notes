@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:notes/src/presentation/widgets/home/home_delete_dialog.dart';
 
 import '../../providers/note_provider.dart';
 import 'home_note_actions.dart';
@@ -66,62 +67,15 @@ class HomeNoteCard extends ConsumerWidget {
                     context: context,
                     barrierDismissible: true,
                     builder: (context) {
-                      return AlertDialog(
-                        backgroundColor: Colors.black87,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        title: const Text(
-                          "Delete Note?",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        content: const Text(
-                          "Are you sure you want to delete this note? This cannot be undone.",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
-                          ),
-                        ),
-                        actionsPadding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 6,
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              HapticFeedback.selectionClick();
-                              Navigator.pop(context);
-                            },
-                            child: const Text(
-                              "Cancel",
-                              style: TextStyle(color: Colors.white70),
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            onPressed: () {
-                              HapticFeedback.heavyImpact();
-                              ref
-                                  .read(notesProvider.notifier)
-                                  .deleteNote(note.id);
-                              Navigator.pop(context);
-                            },
-                            child: const Text("Delete"),
-                          ),
-                        ],
+                      return HomeDeleteDialog(
+                        onConfirm: () {
+                          ref.read(notesProvider.notifier).deleteNote(note.id);
+                        },
                       );
                     },
                   );
                 },
+
                 onPinToggle: () {
                   Navigator.pop(context);
                   ref.read(notesProvider.notifier).togglePin(note.id);
