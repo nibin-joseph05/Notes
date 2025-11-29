@@ -30,11 +30,17 @@ android {
     }
 
     buildTypes {
-        release {
-
+        getByName("release") {
+            isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("debug")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
+
 }
 
 flutter {
@@ -43,4 +49,5 @@ flutter {
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.android.play:core:1.10.3")
 }

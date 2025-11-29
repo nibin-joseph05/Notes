@@ -29,13 +29,10 @@ class AddNoteFooter extends StatelessWidget {
     }
   }
 
-  String get formattedDate {
-    return DateFormat('hh:mm a • MMM dd, yyyy').format(createdAt);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final isWide = MediaQuery.of(context).size.width > 480;
+    final formattedTime = DateFormat('hh:mm a').format(createdAt);
+    final formattedDate = DateFormat('MMM dd, yyyy').format(createdAt);
 
     return Row(
       children: [
@@ -50,31 +47,38 @@ class AddNoteFooter extends StatelessWidget {
           icon: const Icon(FontAwesomeIcons.camera, size: 22, color: Colors.white),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Voice recording feature coming soon"),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          },
           tooltip: "Record voice (coming soon)",
           icon: const Icon(FontAwesomeIcons.microphone, size: 22, color: Colors.white),
         ),
 
         const Spacer(),
 
-        Expanded(
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                DateFormat('hh:mm a').format(DateTime.now()),
+                formattedTime,
                 style: const TextStyle(color: Colors.white, fontSize: 13),
               ),
+              const SizedBox(height: 2),
               Text(
-                DateFormat('MMM dd, yyyy').format(createdAt),
+                formattedDate,
                 style: const TextStyle(color: Colors.white70, fontSize: 12),
               ),
             ],
           ),
         ),
-
-        const SizedBox(width: 12),
 
         PopupMenuButton(
           color: const Color(0xff1E1E1E),

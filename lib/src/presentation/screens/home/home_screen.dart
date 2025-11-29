@@ -135,6 +135,19 @@ class HomeScreen extends ConsumerWidget {
                               ),
                             ),
                           ),
+
+                        const SizedBox(height: 8),
+
+                        Center(
+                          child: Text(
+                            "Dedicated to my sister, Nibina ❤️",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
                       ],
                     );
                   },

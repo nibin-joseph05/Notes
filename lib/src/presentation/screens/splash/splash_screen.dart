@@ -79,7 +79,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
             ScaleTransition(
               scale: _scaleAnimation,
               child: Image.asset(
-                "assets/logo/logo.png",
+                "assets/logo/logo.webp",
                 width: 150,
               ),
             ),
