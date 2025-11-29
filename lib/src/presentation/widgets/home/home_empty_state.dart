@@ -6,31 +6,35 @@ class HomeEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: const [
-        Icon(
-          FontAwesomeIcons.noteSticky,
-          size: 90,
-          color: Colors.white24,
-        ),
-        SizedBox(height: 22),
-        Text(
-          "There is no notes",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
+    return const Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            FontAwesomeIcons.noteSticky,
+            size: 90,
+            color: Colors.white24,
           ),
-        ),
-        SizedBox(height: 10),
-        Text(
-          "✎ Make a new one",
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.white54,
+          SizedBox(height: 22),
+          Text(
+            "There is no notes",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
           ),
-        ),
-      ],
+          SizedBox(height: 10),
+          Text(
+            "✎ Make a new one",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white54,
+            ),
+          ),
+        ],
+      ),
     );
   }
+
 }
