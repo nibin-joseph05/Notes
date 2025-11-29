@@ -13,8 +13,9 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final width = MediaQuery.of(context).size.width;
-    final isTablet = width > 600;
+    final size = MediaQuery.of(context).size;
+    final isTablet = size.width > 700;
+    final horizontalPadding = size.width * (isTablet ? 0.08 : 0.045);
     final settings = ref.watch(settingsProvider);
 
     return Scaffold(
@@ -22,40 +23,49 @@ class SettingsScreen extends ConsumerWidget {
         title: const Text("Settings"),
         elevation: 0,
       ),
-
       body: Stack(
         children: [
-
           const AppBackground(),
 
           Center(
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: isTablet ? 650 : double.infinity),
+              constraints: BoxConstraints(maxWidth: isTablet ? 700 : size.width),
               child: ListView(
                 padding: EdgeInsets.symmetric(
-                  horizontal: isTablet ? 26 : 18,
-                  vertical: 16,
+                  horizontal: horizontalPadding,
+                  vertical: isTablet ? 24 : 16,
                 ),
                 children: [
+
+                  /// GENERAL
                   _sectionCard(
                     title: "General",
+                    subtitle: "Permissions & system access",
                     icon: Icons.tune_rounded,
-                    children: [
+                    children: const [
                       PermissionWidget(),
                     ],
                   ),
-                  const SizedBox(height: 18),
+
+                  SizedBox(height: isTablet ? 28 : 22),
+
+                  /// APPEARANCE
                   _sectionCard(
                     title: "Appearance",
+                    subtitle: "Customize look & feel",
                     icon: Icons.palette_rounded,
-                    children: const [
-                      FontSelectorWidget(),
-                      SizedBox(height: 10),
-                      WallpaperSelectorWidget(),
-                      SizedBox(height: 10),
-                      ThemeModeWidget(),
+                    children: [
+                      _settingsTile(child: const FontSelectorWidget()),
+                      SizedBox(height: isTablet ? 16 : 12),
+                      _settingsTile(child: const WallpaperSelectorWidget()),
+                      SizedBox(height: isTablet ? 16 : 12),
+                      _settingsTile(child: const ThemeModeWidget()),
                     ],
                   ),
+
+                  SizedBox(height: isTablet ? 28 : 22),
+
+                  _footerInfo(fontSize: isTablet ? 14 : 12),
                 ],
               ),
             ),
@@ -65,38 +75,95 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _sectionCard({
+  // SECTION CARD
+  static Widget _sectionCard({
     required String title,
+    required String subtitle,
     required IconData icon,
     required List<Widget> children,
   }) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.35),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white24),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth > 500;
+
+        return Container(
+          padding: EdgeInsets.fromLTRB(
+            isWide ? 26 : 22,
+            isWide ? 22 : 20,
+            isWide ? 26 : 22,
+            isWide ? 28 : 24,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.42),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white24),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, color: Colors.white.withOpacity(0.85), size: 22),
-              const SizedBox(width: 8),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+              Row(
+                children: [
+                  Icon(icon, color: Colors.white.withOpacity(0.9), size: isWide ? 26 : 24),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: isWide ? 20 : 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          subtitle,
+                          style: TextStyle(
+                            fontSize: isWide ? 14 : 13,
+                            color: Colors.white.withOpacity(0.70),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
+              const SizedBox(height: 18),
+              ...children,
             ],
           ),
-          const SizedBox(height: 16),
-          ...children,
-        ],
+        );
+      },
+    );
+  }
+
+  // SETTINGS TILE
+  static Widget _settingsTile({required Widget child}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.07),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.white24),
+      ),
+      child: child,
+    );
+  }
+
+  // FOOTER
+  static Widget _footerInfo({required double fontSize}) {
+    return Center(
+      child: Opacity(
+        opacity: 0.80,
+        child: Text(
+          "Version 1.0.0 • AiBi Notes",
+          style: TextStyle(
+            fontSize: fontSize,
+            color: Colors.white.withOpacity(0.72),
+          ),
+        ),
       ),
     );
   }

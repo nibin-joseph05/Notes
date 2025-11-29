@@ -15,6 +15,13 @@ class ThemeModeWidget extends ConsumerWidget {
       value: settings.darkMode,
       onToggle: (val) {
         ref.read(settingsProvider.notifier).toggleTheme(val);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Dark mode feature coming soon..."),
+            duration: Duration(seconds: 2),
+          ),
+        );
       },
     );
   }

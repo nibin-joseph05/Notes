@@ -19,35 +19,65 @@ class _WallpaperCropScreenState extends State<WallpaperCropScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("Adjust Wallpaper"),
         backgroundColor: Colors.black,
+        elevation: 0,
+        title: const Text(
+          "Adjust Wallpaper",
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
       ),
+
       body: Stack(
         children: [
-          Crop(
-            image: File(widget.imagePath).readAsBytesSync(),
-            controller: _cropController,
-            onCropped: (output) {
-              Navigator.pop(context, output);
-            },
-            withCircleUi: false,
-            initialSize: 0.9,
-            interactive: true,
+          Center(
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.70,
+                child: Crop(
+                  image: File(widget.imagePath).readAsBytesSync(),
+                  controller: _cropController,
+                  onCropped: (output) {
+                    Navigator.pop(context, output);
+                  },
+                  initialSize: 0.75,
+                  withCircleUi: false,
+                  interactive: true,
+                ),
+              ),
+            ),
           ),
+
           if (_loading)
-            const Center(child: CircularProgressIndicator(color: Colors.white)),
+            Container(
+              color: Colors.black54,
+              child: const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              ),
+            )
         ],
       ),
+
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.greenAccent, foregroundColor: Colors.black),
-          onPressed: () async {
+            backgroundColor: Colors.greenAccent,
+            foregroundColor: Colors.black,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+          onPressed: () {
             setState(() => _loading = true);
             _cropController.crop();
           },
-          child: const Text("Apply"),
+          child: const Text(
+            "Apply Wallpaper",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
         ),
       ),
     );

@@ -56,30 +56,41 @@ class _WallpaperDialog extends ConsumerWidget {
     }
   }
 
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
+    final size = MediaQuery.of(context).size;
+
+
+    final dialogWidth = size.width * 0.88;
+    final previewHeight = size.height * 0.24;
+    final isSmallPhone = size.height < 650;
 
     return Dialog(
       backgroundColor: Colors.black.withOpacity(0.82),
-      insetPadding: const EdgeInsets.all(22),
+      insetPadding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      child: Padding(
-        padding: const EdgeInsets.all(18),
+      child: Container(
+        width: dialogWidth,
+        padding: EdgeInsets.all(isSmallPhone ? 14 : 18),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("Wallpaper",
-                style: TextStyle(
-                    color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 16),
+            const Text(
+              "Wallpaper",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 19,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 14),
 
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: Container(
-                height: 190,
+                height: previewHeight,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
@@ -93,20 +104,21 @@ class _WallpaperDialog extends ConsumerWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 18),
 
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    icon: const Icon(Icons.photo),
+                    icon: const Icon(Icons.photo, size: 20),
                     label: const Text("Change"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.greenAccent,
                       foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: EdgeInsets.symmetric(vertical: isSmallPhone ? 10 : 12),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(13),
+                      ),
                     ),
                     onPressed: () => _changeWallpaper(context, ref),
                   ),
@@ -114,14 +126,15 @@ class _WallpaperDialog extends ConsumerWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton.icon(
-                    icon: const Icon(Icons.restore),
+                    icon: const Icon(Icons.restore, size: 20),
                     label: const Text("Reset"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white12,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: EdgeInsets.symmetric(vertical: isSmallPhone ? 10 : 12),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(13),
+                      ),
                     ),
                     onPressed: () {
                       notifier.setWallpaper("");
@@ -132,7 +145,19 @@ class _WallpaperDialog extends ConsumerWidget {
               ],
             ),
 
-            const SizedBox(height: 4),
+            const SizedBox(height: 16),
+
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                "Go Back",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
           ],
         ),
       ),
