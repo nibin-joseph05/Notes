@@ -1,16 +1,141 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../providers/settings_provider.dart';
+import 'WallpaperCropScreen.dart';
 
-class WallpaperSelectorWidget extends StatelessWidget {
+class WallpaperSelectorWidget extends ConsumerWidget {
   const WallpaperSelectorWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+
     return ListTile(
-      title: const Text("Change Wallpaper", style: TextStyle(color: Colors.white)),
-      trailing: const Icon(Icons.image, color: Colors.white),
+      title: const Text("Wallpaper", style: TextStyle(color: Colors.white)),
+      subtitle: Text(
+        settings.wallpaperPath.isNotEmpty
+            ? "Custom wallpaper selected"
+            : "Default wallpaper",
+        style: const TextStyle(color: Colors.white70, fontSize: 13),
+      ),
+      trailing: const Icon(Icons.chevron_right_rounded, color: Colors.white),
       onTap: () {
-        // later: open image picker
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => const _WallpaperDialog(),
+        );
       },
+    );
+  }
+}
+
+class _WallpaperDialog extends ConsumerWidget {
+  const _WallpaperDialog();
+
+  Future<void> _changeWallpaper(BuildContext context, WidgetRef ref) async {
+    final notifier = ref.read(settingsProvider.notifier);
+    final picker = ImagePicker();
+
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked == null) return;
+
+    final croppedBytes = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => WallpaperCropScreen(imagePath: picked.path),
+      ),
+    );
+
+    if (croppedBytes != null) {
+      final file = File("${picked.path}_crop.png");
+      await file.writeAsBytes(croppedBytes);
+      notifier.setWallpaper(file.path);
+    }
+  }
+
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    final notifier = ref.read(settingsProvider.notifier);
+
+    return Dialog(
+      backgroundColor: Colors.black.withOpacity(0.82),
+      insetPadding: const EdgeInsets.all(22),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text("Wallpaper",
+                style: TextStyle(
+                    color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 16),
+
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                height: 190,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: settings.wallpaperPath.isNotEmpty
+                        ? FileImage(File(settings.wallpaperPath))
+                        : const AssetImage("assets/add-note-bg/default-bg.png")
+                    as ImageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.photo),
+                    label: const Text("Change"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.greenAccent,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () => _changeWallpaper(context, ref),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.restore),
+                    label: const Text("Reset"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white12,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () {
+                      notifier.setWallpaper("");
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 4),
+          ],
+        ),
+      ),
     );
   }
 }

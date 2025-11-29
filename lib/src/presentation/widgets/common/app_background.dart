@@ -1,30 +1,24 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/settings_provider.dart';
 
-class AppBackground extends StatelessWidget {
-  final String? imagePath;
-
-  const AppBackground({super.key, this.imagePath});
+class AppBackground extends ConsumerWidget {
+  const AppBackground({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final bool hasCustomImage = imagePath != null && imagePath!.isNotEmpty;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    final path = settings.wallpaperPath;
+    final hasCustom = path.isNotEmpty;
 
     return Stack(
       children: [
         Positioned.fill(
-          child: hasCustomImage
-              ? Image.file(
-            File(imagePath!),
-            fit: BoxFit.cover,
-          )
-              : Image.asset(
-            "assets/add-note-bg/default-bg.png",
-            fit: BoxFit.cover,
-          ),
+          child: hasCustom
+              ? Image.file(File(path), fit: BoxFit.cover)
+              : Image.asset("assets/add-note-bg/default-bg.png", fit: BoxFit.cover),
         ),
-
-
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(

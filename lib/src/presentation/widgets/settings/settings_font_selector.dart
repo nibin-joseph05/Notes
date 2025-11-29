@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/fonts/app_fonts.dart';
 import '../../providers/settings_provider.dart';
 
 class FontSelectorWidget extends ConsumerWidget {
@@ -91,7 +92,7 @@ class FontSelectorWidget extends ConsumerWidget {
                     const SizedBox(height: 10),
                     Expanded(
                       child: Text(
-                        "I love Notes App",
+                        AppFonts.previewText,
                         maxLines: 3,
                         overflow: TextOverflow.fade,
                         style: GoogleFonts.getFont(

@@ -31,7 +31,10 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
         body: Stack(
           children: [
 
-            AddNoteBackground(imagePath: selectedImage?.path),
+            const AppBackground(),
+
+            if (selectedImage != null)
+              AddNoteBackground(imagePath: selectedImage!.path),
 
             SafeArea(
               child: Padding(
