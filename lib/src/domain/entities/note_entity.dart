@@ -16,4 +16,22 @@ class NoteEntity {
     required this.createdAt,
     required this.updatedAt,
   });
+
+  NoteEntity copyWith({
+    String? title,
+    String? body,
+    String? imageUrl,
+    bool? isPinned,
+    DateTime? updatedAt,
+  }) {
+    return NoteEntity(
+      id: id,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      imageUrl: imageUrl ?? this.imageUrl,
+      isPinned: isPinned ?? this.isPinned,
+      createdAt: createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

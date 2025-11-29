@@ -1,17 +1,137 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:flutter/material.dart';
 
-class HomeNoteCard extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../providers/note_provider.dart';
+import 'home_note_actions.dart';
+
+class HomeNoteCard extends ConsumerWidget {
   final dynamic note;
-  const HomeNoteCard({required this.note});
+  const HomeNoteCard({super.key, required this.note});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    if (note == null) {
+      return Container(
+        height: 120,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          color: const Color(0xff111111),
+        ),
+        child: const Center(
+          child: SizedBox(
+            width: 22,
+            height: 22,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
+      );
+    }
+
     final hasImage = note.imageUrl != null && note.imageUrl!.isNotEmpty;
 
     return GestureDetector(
-      onTap: () {},
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+
+      },
+      onLongPress: () {
+        HapticFeedback.mediumImpact();
+
+        showDialog(
+          context: context,
+          barrierColor: Colors.black54,
+          builder: (context) {
+            return Dialog(
+              insetPadding: const EdgeInsets.symmetric(
+                horizontal: 50,
+                vertical: 260,
+              ),
+              backgroundColor: Colors.transparent,
+              child: HomeNoteActions(
+                isPinned: note.isPinned,
+                onEdit: () {
+                  Navigator.pop(context);
+
+                },
+                onDelete: () {
+                  Navigator.pop(context);
+                  HapticFeedback.lightImpact();
+
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) {
+                      return AlertDialog(
+                        backgroundColor: Colors.black87,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        title: const Text(
+                          "Delete Note?",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        content: const Text(
+                          "Are you sure you want to delete this note? This cannot be undone.",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
+                        ),
+                        actionsPadding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 6,
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              HapticFeedback.selectionClick();
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              "Cancel",
+                              style: TextStyle(color: Colors.white70),
+                            ),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              HapticFeedback.heavyImpact();
+                              ref
+                                  .read(notesProvider.notifier)
+                                  .deleteNote(note.id);
+                              Navigator.pop(context);
+                            },
+                            child: const Text("Delete"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                onPinToggle: () {
+                  Navigator.pop(context);
+                  ref.read(notesProvider.notifier).togglePin(note.id);
+                },
+              ),
+            );
+          },
+        );
+      },
+
       child: ClipRRect(
         borderRadius: BorderRadius.circular(18),
         child: Stack(
@@ -19,10 +139,7 @@ class HomeNoteCard extends StatelessWidget {
 
             Positioned.fill(
               child: hasImage
-                  ? Image.file(
-                File(note.imageUrl!),
-                fit: BoxFit.cover,
-              )
+                  ? _AnimatedNoteImage(path: note.imageUrl!)
                   : Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
@@ -36,21 +153,7 @@ class HomeNoteCard extends StatelessWidget {
 
 
             Positioned.fill(
-              child: Container(
-                color: Colors.black.withOpacity(0.15),
-              ),
-            ),
-
-
-            Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 0.001, sigmaY: 0.001),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.32),
-                  ),
-                ),
-              ),
+              child: Container(color: Colors.black.withOpacity(0.22)),
             ),
 
 
@@ -60,7 +163,7 @@ class HomeNoteCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    note.title,
+                    note.title ?? "",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -71,7 +174,7 @@ class HomeNoteCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    note.body,
+                    note.body ?? "",
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -83,14 +186,17 @@ class HomeNoteCard extends StatelessWidget {
                   const Spacer(),
                   Text(
                     "Updated: ${note.updatedAt.toString().substring(0, 10)}",
-                    style: const TextStyle(fontSize: 12, color: Colors.white60),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.white60,
+                    ),
                   ),
                 ],
               ),
             ),
 
 
-            if (note.isPinned)
+            if (note.isPinned == true)
               Positioned(
                 top: 10,
                 right: 10,
@@ -110,6 +216,82 @@ class HomeNoteCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+
+class _AnimatedNoteImage extends StatelessWidget {
+  final String path;
+  const _AnimatedNoteImage({required this.path});
+
+  @override
+  Widget build(BuildContext context) {
+    final file = File(path);
+
+    if (!file.existsSync()) {
+
+      return Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xff1c1c1c), Color(0xff000000)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+      );
+    }
+
+    return Image.file(
+      file,
+      fit: BoxFit.cover,
+      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+        if (wasSynchronouslyLoaded) return child;
+
+
+        if (frame == null) {
+          return Container(
+            color: const Color(0xff111111),
+            child: const Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
+                ),
+              ),
+            ),
+          );
+        }
+
+
+        return AnimatedOpacity(
+          opacity: 1,
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+          child: child,
+        );
+      },
+      errorBuilder: (context, error, stackTrace) {
+
+        return Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xff1c1c1c), Color(0xff000000)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: const Center(
+            child: Icon(
+              Icons.image_not_supported_outlined,
+              color: Colors.white38,
+              size: 28,
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -19,7 +19,7 @@ class AddNoteBackground extends StatelessWidget {
             fit: BoxFit.cover,
           )
               : Image.asset(
-            "assets/add-note-bg/default-bg.png",
+            "assets/bg-image/bg.webp",
             fit: BoxFit.cover,
           ),
         ),

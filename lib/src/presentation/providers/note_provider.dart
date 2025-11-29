@@ -16,7 +16,16 @@ class NotesNotifier extends StateNotifier<List<NoteEntity>> {
   }
 
   Future<void> loadNotes() async {
-    state = await repository.getNotes();
+    final list = await repository.getNotes();
+
+    list.sort((a, b) {
+      if (a.isPinned != b.isPinned) {
+        return b.isPinned ? 1 : -1;
+      }
+      return b.updatedAt.compareTo(a.updatedAt);
+    });
+
+    state = list;
   }
 
   Future<void> addNote(NoteEntity note) async {
@@ -28,4 +37,16 @@ class NotesNotifier extends StateNotifier<List<NoteEntity>> {
     await repository.deleteNote(id);
     await loadNotes();
   }
+
+  Future<void> togglePin(String id) async {
+    final note = state.firstWhere((e) => e.id == id);
+    final updated = note.copyWith(
+      isPinned: !note.isPinned,
+      updatedAt: DateTime.now(),
+    );
+
+    await repository.saveNote(updated);
+    await loadNotes();
+  }
+
 }

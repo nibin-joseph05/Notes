@@ -96,7 +96,7 @@ class _WallpaperDialog extends ConsumerWidget {
                   image: DecorationImage(
                     image: settings.wallpaperPath.isNotEmpty
                         ? FileImage(File(settings.wallpaperPath))
-                        : const AssetImage("assets/add-note-bg/default-bg.png")
+                        : const AssetImage("assets/bg-image/bg.webp")
                     as ImageProvider,
                     fit: BoxFit.cover,
                   ),

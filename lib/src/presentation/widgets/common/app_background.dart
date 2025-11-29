@@ -17,7 +17,7 @@ class AppBackground extends ConsumerWidget {
         Positioned.fill(
           child: hasCustom
               ? Image.file(File(path), fit: BoxFit.cover)
-              : Image.asset("assets/add-note-bg/default-bg.png", fit: BoxFit.cover),
+              : Image.asset("assets/bg-image/bg.webp", fit: BoxFit.cover),
         ),
         Container(
           decoration: BoxDecoration(
