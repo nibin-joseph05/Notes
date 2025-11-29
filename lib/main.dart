@@ -23,17 +23,18 @@ Future<void> main() async {
   runApp(const ProviderScope(child: NotesApp()));
 }
 
-class NotesApp extends StatelessWidget {
+class NotesApp extends ConsumerWidget {
   const NotesApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       title: 'Notes',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.darkTheme(ref),
       initialRoute: AppRoutes.splash,
       onGenerateRoute: AppRouter.generateRoute,
     );
   }
 }
+
