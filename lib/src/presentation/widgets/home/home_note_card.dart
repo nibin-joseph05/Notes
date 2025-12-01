@@ -35,6 +35,7 @@ class HomeNoteCard extends ConsumerWidget {
     }
 
     final hasImage = note.imageUrl != null && note.imageUrl!.isNotEmpty;
+    final hasColor = note.bgColor != null;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -101,6 +102,8 @@ class HomeNoteCard extends ConsumerWidget {
             Positioned.fill(
               child: hasImage
                   ? _AnimatedNoteImage(path: note.imageUrl!)
+                  : hasColor
+                  ? Container(color: Color(note.bgColor!))
                   : Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(

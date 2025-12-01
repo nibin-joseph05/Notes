@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class AddNoteFields extends StatelessWidget {
   final TextEditingController titleController;
   final TextEditingController bodyController;
+  final Color textColor;
 
   const AddNoteFields({
     super.key,
     required this.titleController,
     required this.bodyController,
+    required this.textColor,
   });
 
   @override
@@ -17,13 +19,14 @@ class AddNoteFields extends StatelessWidget {
       children: [
         TextField(
           controller: titleController,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w600,
-            color: Colors.white,
+            color: textColor,
           ),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: "Title",
+            hintStyle: TextStyle(color: textColor.withOpacity(0.55)),
             border: InputBorder.none,
           ),
         ),
@@ -32,17 +35,17 @@ class AddNoteFields extends StatelessWidget {
           controller: bodyController,
           maxLines: null,
           keyboardType: TextInputType.multiline,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w400,
-            color: Colors.white,
+            color: textColor,
           ),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: "Start typing...",
+            hintStyle: TextStyle(color: textColor.withOpacity(0.55)),
             border: InputBorder.none,
           ),
         ),
-
       ],
     );
   }

@@ -8,6 +8,7 @@ import '../../widgets/add_note/add_note_appbar.dart';
 import '../../widgets/add_note/add_note_fields.dart';
 import '../../widgets/add_note/add_note_footer.dart';
 import '../../widgets/common/app_background.dart';
+import '../../widgets/add_note/add_note_color_selector.dart';
 
 class AddNoteScreen extends ConsumerStatefulWidget {
   final NoteEntity? note;
@@ -22,7 +23,13 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   final TextEditingController bodyCtrl = TextEditingController();
   bool isPinned = false;
   File? selectedImage;
+  int? selectedColor;
 
+  Color get textColor {
+    if (selectedImage != null) return Colors.white;
+    if (selectedColor != null) return Colors.black;
+    return Colors.white;
+  }
 
   @override
   void initState() {
@@ -34,6 +41,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
       if (widget.note!.imageUrl != null) {
         selectedImage = File(widget.note!.imageUrl!);
       }
+      selectedColor = widget.note?.bgColor;
     }
   }
 
@@ -73,6 +81,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                             body: body,
                             isPinned: isPinned,
                             imageUrl: selectedImage?.path,
+                            bgColor: selectedColor,
                             createdAt: DateTime.now(),
                             updatedAt: DateTime.now(),
                           );
@@ -95,14 +104,19 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
 
                     const SizedBox(height: 20),
 
-
                     Expanded(
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: IntrinsicHeight(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: selectedColor != null ? Color(selectedColor!) : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        child: SingleChildScrollView(
+                          physics: BouncingScrollPhysics(),
                           child: AddNoteFields(
                             titleController: titleCtrl,
                             bodyController: bodyCtrl,
+                            textColor: textColor,
                           ),
                         ),
                       ),
@@ -110,12 +124,27 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
 
                     const SizedBox(height: 10),
 
+                    AddNoteColorSelector(
+                      selectedColor: selectedColor,
+                      onColorSelected: (color) {
+                        setState(() {
+                          selectedColor = color;
+                          if (color != null) selectedImage = null;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 14),
+
 
                     AddNoteFooter(
-                      createdAt: widget.note?.createdAt ?? DateTime.now(), // new line
+                      createdAt: widget.note?.createdAt ?? DateTime.now(),
                       onImageSelected: (image) {
-                        setState(() => selectedImage = image);
+                        setState(() {
+                          selectedImage = image;
+                          selectedColor = null;
+                        });
                       },
+
                     )
 
                   ],

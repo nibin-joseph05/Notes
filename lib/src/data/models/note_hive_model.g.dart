@@ -21,6 +21,7 @@ class NoteHiveModelAdapter extends TypeAdapter<NoteHiveModel> {
       title: fields[1] as String,
       body: fields[2] as String,
       imageUrl: fields[3] as String?,
+      bgColor: fields[7] as int?,
       pinned: fields[4] as bool,
       createdAt: fields[5] as DateTime,
       updatedAt: fields[6] as DateTime,
@@ -30,7 +31,7 @@ class NoteHiveModelAdapter extends TypeAdapter<NoteHiveModel> {
   @override
   void write(BinaryWriter writer, NoteHiveModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -39,6 +40,8 @@ class NoteHiveModelAdapter extends TypeAdapter<NoteHiveModel> {
       ..write(obj.body)
       ..writeByte(3)
       ..write(obj.imageUrl)
+      ..writeByte(7)
+      ..write(obj.bgColor)
       ..writeByte(4)
       ..write(obj.pinned)
       ..writeByte(5)
