@@ -9,7 +9,7 @@ import 'package:notes/src/presentation/widgets/home/home_delete_dialog.dart';
 
 import '../../providers/note_provider.dart';
 import 'home_note_actions.dart';
-
+import '../../widgets/common/global_loader.dart';
 class HomeNoteCard extends ConsumerWidget {
   final dynamic note;
   const HomeNoteCard({super.key, required this.note});
@@ -39,9 +39,9 @@ class HomeNoteCard extends ConsumerWidget {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {},
-      onLongPress: () {
+      onTap: () {
         HapticFeedback.mediumImpact();
+
         showDialog(
           context: context,
           barrierColor: Colors.black54,
@@ -58,27 +58,52 @@ class HomeNoteCard extends ConsumerWidget {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => AddNoteScreen(note: note),
-                    ),
+                    MaterialPageRoute(builder: (_) => AddNoteScreen(note: note)),
                   );
                 },
                 onDelete: () {
+                  // Close actions dialog
                   Navigator.pop(context);
                   HapticFeedback.lightImpact();
+
                   showDialog(
                     context: context,
                     barrierDismissible: true,
                     builder: (context) {
                       return HomeDeleteDialog(
-                        onConfirm: () {
-                          ref.read(notesProvider.notifier).deleteNote(note.id);
+                        onConfirm: () async {
+                          Navigator.pop(context);
+
+                          final rootContext = Navigator.of(context, rootNavigator: true).context;
+
+                          if (!context.mounted) return;
+                          showGlobalLoader(rootContext);
+                          await ref.read(notesProvider.notifier).deleteNote(note.id);
+                          if (!context.mounted) return;
+                          hideGlobalLoader(rootContext);
                         },
                       );
                     },
                   );
                 },
+
                 onPinToggle: () {
+                  final notes = ref.read(notesProvider);
+                  final pinnedCount = notes.where((n) => n.isPinned).length;
+                  final isCurrentlyPinned = note.isPinned == true;
+
+                  if (!isCurrentlyPinned && pinnedCount >= 4) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('You can pin up to 4 notes only.'),
+                        behavior: SnackBarBehavior.floating,
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                    return;
+                  }
+
                   Navigator.pop(context);
                   ref.read(notesProvider.notifier).togglePin(note.id);
                 },

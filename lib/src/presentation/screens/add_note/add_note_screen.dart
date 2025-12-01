@@ -10,6 +10,7 @@ import '../../widgets/add_note/add_note_font_selector.dart';
 import '../../widgets/add_note/add_note_footer.dart';
 import '../../widgets/common/app_background.dart';
 import '../../widgets/add_note/add_note_color_selector.dart';
+import '../../widgets/common/global_loader.dart';
 
 class AddNoteScreen extends ConsumerStatefulWidget {
   final NoteEntity? note;
@@ -164,12 +165,67 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
     );
   }
 
-  void saveNote() {
+  Future<void> saveNote() async {
     final title = titleCtrl.text.trim();
     final body = bodyCtrl.text.trim();
 
-    final noteToSave = widget.note == null
-        ? NoteEntity(
+    if (title.isEmpty && body.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text("Write something before saving."),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height - 120,
+            left: 16,
+            right: 16,
+          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
+
+    final notes = ref.read(notesProvider);
+    final pinnedCount = notes.where((n) => n.isPinned).length;
+
+    final isEditing = widget.note != null;
+    final wasPinnedBefore = widget.note?.isPinned ?? false;
+    final isTryingToPinNow = isPinned && !wasPinnedBefore;
+
+
+    if ((!isEditing && isPinned && pinnedCount >= 4) ||
+        (isEditing && isTryingToPinNow && pinnedCount >= 4)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text("You can pin only up to 4 notes."),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height - 120,
+            left: 16,
+            right: 16,
+          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+
+      return;
+    }
+
+    showGlobalLoader(context);
+
+    final noteToSave = isEditing
+        ? widget.note!.copyWith(
+      title: title.isEmpty ? "Untitled" : title,
+      body: body,
+      isPinned: isPinned,
+      imageUrl: selectedImage?.path,
+      bgColor: selectedColor,
+      fontFamily: selectedFont,
+      updatedAt: DateTime.now(),
+    )
+        : NoteEntity(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       title: title.isEmpty ? "Untitled" : title,
       body: body,
@@ -179,18 +235,13 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
       fontFamily: selectedFont,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
-    )
-        : widget.note!.copyWith(
-      title: title.isEmpty ? "Untitled" : title,
-      body: body,
-      isPinned: isPinned,
-      imageUrl: selectedImage?.path,
-      bgColor: selectedColor,
-      fontFamily: selectedFont,
-      updatedAt: DateTime.now(),
     );
 
-    ref.read(notesProvider.notifier).addNote(noteToSave);
+    await ref.read(notesProvider.notifier).addNote(noteToSave);
+
+    hideGlobalLoader(context);
+
     Navigator.pop(context);
   }
+
 }
