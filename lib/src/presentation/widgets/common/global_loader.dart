@@ -7,10 +7,7 @@ class GlobalLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ModalBarrier(
-          dismissible: false,
-          color: Colors.black.withOpacity(0.45),
-        ),
+        ModalBarrier(dismissible: false, color: Colors.black.withOpacity(0.45)),
         Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -44,7 +41,6 @@ class GlobalLoader extends StatelessWidget {
   }
 }
 
-
 void showGlobalLoader(BuildContext context) {
   showDialog(
     context: Navigator.of(context, rootNavigator: true).context,
@@ -57,4 +53,3 @@ void showGlobalLoader(BuildContext context) {
 void hideGlobalLoader(BuildContext context) {
   Navigator.of(context, rootNavigator: true).pop();
 }
-

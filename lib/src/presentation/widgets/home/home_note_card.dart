@@ -10,6 +10,7 @@ import 'package:notes/src/presentation/widgets/home/home_delete_dialog.dart';
 import '../../providers/note_provider.dart';
 import 'home_note_actions.dart';
 import '../../widgets/common/global_loader.dart';
+
 class HomeNoteCard extends ConsumerWidget {
   final dynamic note;
   const HomeNoteCard({super.key, required this.note});
@@ -39,9 +40,17 @@ class HomeNoteCard extends ConsumerWidget {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        HapticFeedback.mediumImpact();
 
+      onTap: () {
+        HapticFeedback.lightImpact();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => AddNoteScreen(note: note)),
+        );
+      },
+
+      onLongPress: () {
+        HapticFeedback.mediumImpact();
         showDialog(
           context: context,
           barrierColor: Colors.black54,
@@ -58,11 +67,12 @@ class HomeNoteCard extends ConsumerWidget {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => AddNoteScreen(note: note)),
+                    MaterialPageRoute(
+                      builder: (_) => AddNoteScreen(note: note),
+                    ),
                   );
                 },
                 onDelete: () {
-                  // Close actions dialog
                   Navigator.pop(context);
                   HapticFeedback.lightImpact();
 
@@ -73,20 +83,20 @@ class HomeNoteCard extends ConsumerWidget {
                       return HomeDeleteDialog(
                         onConfirm: () async {
                           Navigator.pop(context);
-
-                          final rootContext = Navigator.of(context, rootNavigator: true).context;
-
-                          if (!context.mounted) return;
+                          final rootContext = Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).context;
                           showGlobalLoader(rootContext);
-                          await ref.read(notesProvider.notifier).deleteNote(note.id);
-                          if (!context.mounted) return;
+                          await ref
+                              .read(notesProvider.notifier)
+                              .deleteNote(note.id);
                           hideGlobalLoader(rootContext);
                         },
                       );
                     },
                   );
                 },
-
                 onPinToggle: () {
                   final notes = ref.read(notesProvider);
                   final pinnedCount = notes.where((n) => n.isPinned).length;
@@ -122,33 +132,34 @@ class HomeNoteCard extends ConsumerWidget {
                   ? _AnimatedNoteImage(path: note.imageUrl!)
                   : hasColor
                   ? Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(note.bgColor!).withOpacity(0.75),
-                      Color(note.bgColor!),
-                      Color(note.bgColor!).withOpacity(0.75),
-                    ],
-                  ),
-                ),
-              )
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Color(note.bgColor!).withOpacity(0.75),
+                            Color(note.bgColor!),
+                            Color(note.bgColor!).withOpacity(0.75),
+                          ],
+                        ),
+                      ),
+                    )
                   : Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xff1c1c1c), Color(0xff000000)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-              ),
-
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xff1c1c1c), Color(0xff000000)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                    ),
             ),
 
             Positioned.fill(
               child: Container(
-                color: hasImage ? Colors.black.withOpacity(0.22) : Colors.transparent,
+                color: hasImage
+                    ? Colors.black.withOpacity(0.22)
+                    : Colors.transparent,
               ),
             ),
 

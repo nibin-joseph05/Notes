@@ -54,135 +54,143 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
     final width = MediaQuery.of(context).size.width;
     final isTablet = width >= 700;
 
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Stack(
-          children: [
-            const AppBackground(),
 
-            SafeArea(
-              child: Center(
-                child: Container(
-                  width: isTablet ? 650 : double.infinity,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isTablet ? 12 : 18,
-                    vertical: 16,
-                  ),
-                  child: Column(
-                    children: [
-                      AddNoteAppBar(
-                        isPinned: isPinned,
-                        onBack: handleBackPress,
-                        onPinToggle: () => setState(() => isPinned = !isPinned),
-                        onSave: saveNote,
-                      ),
+    return WillPopScope(
+      onWillPop: () async {
+        handleBackPress();
+        return false;
+      },
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Stack(
+            children: [
+              const AppBackground(),
 
-                      const SizedBox(height: 16),
+              SafeArea(
+                child: Center(
+                  child: Container(
+                    width: isTablet ? 650 : double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isTablet ? 12 : 18,
+                      vertical: 16,
+                    ),
+                    child: Column(
+                      children: [
+                        AddNoteAppBar(
+                          isPinned: isPinned,
+                          onBack: handleBackPress,
+                          onPinToggle: () => setState(() => isPinned = !isPinned),
+                          onSave: saveNote,
+                        ),
 
-                      Expanded(
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return SingleChildScrollView(
-                              physics: const BouncingScrollPhysics(),
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  minHeight: constraints.maxHeight,
-                                ),
-                                child: IntrinsicHeight(
-                                  child: Column(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(14),
+                        const SizedBox(height: 16),
 
-                                            image: selectedImage != null
-                                                ? DecorationImage(
-                                              image: FileImage(selectedImage!),
-                                              fit: BoxFit.cover,
+                        Expanded(
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return SingleChildScrollView(
+                                physics: const BouncingScrollPhysics(),
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    minHeight: constraints.maxHeight,
+                                  ),
+                                  child: IntrinsicHeight(
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(14),
+
+                                              image: selectedImage != null
+                                                  ? DecorationImage(
+                                                image: FileImage(selectedImage!),
+                                                fit: BoxFit.cover,
+                                              )
+                                                  : null,
+                                              gradient: selectedImage == null && selectedColor != null
+                                                  ? LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                                  Color(selectedColor!).withOpacity(0.75),
+                                                  Color(selectedColor!),
+                                                  Color(selectedColor!).withOpacity(0.75),
+                                                ],
+                                              )
+                                                  : null,
+                                            ),
+                                            foregroundDecoration: selectedImage != null
+                                                ? BoxDecoration(
+                                              color: Colors.black.withOpacity(0.25),
+                                              borderRadius: BorderRadius.circular(14),
                                             )
                                                 : null,
-                                            gradient: selectedImage == null && selectedColor != null
-                                                ? LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: [
-                                                Color(selectedColor!).withOpacity(0.75),
-                                                Color(selectedColor!),
-                                                Color(selectedColor!).withOpacity(0.75),
-                                              ],
-                                            )
-                                                : null,
-                                          ),
-                                          foregroundDecoration: selectedImage != null
-                                              ? BoxDecoration(
-                                            color: Colors.black.withOpacity(0.25),
-                                            borderRadius: BorderRadius.circular(14),
-                                          )
-                                              : null,
-                                          padding: const EdgeInsets.all(14),
-                                          child: AddNoteFields(
-                                            titleController: titleCtrl,
-                                            bodyController: bodyCtrl,
-                                            textColor: textColor,
-                                            fontFamily: selectedFont,
+                                            padding: const EdgeInsets.all(14),
+                                            child: AddNoteFields(
+                                              titleController: titleCtrl,
+                                              bodyController: bodyCtrl,
+                                              textColor: textColor,
+                                              fontFamily: selectedFont,
+                                            ),
                                           ),
                                         ),
-                                      ),
 
-                                      const SizedBox(height: 14),
+                                        const SizedBox(height: 14),
 
-                                      AddNoteFontSelector(
-                                        selectedFont: selectedFont,
-                                        onFontSelected: (font) {
-                                          setState(() => selectedFont = font);
-                                        },
-                                      ),
+                                        AddNoteFontSelector(
+                                          selectedFont: selectedFont,
+                                          onFontSelected: (font) {
+                                            setState(() => selectedFont = font);
+                                          },
+                                        ),
 
-                                      const SizedBox(height: 14),
+                                        const SizedBox(height: 14),
 
-                                      AddNoteColorSelector(
-                                        selectedColor: selectedColor,
-                                        onColorSelected: (color) {
-                                          setState(() {
-                                            selectedColor = color;
-                                            if (color != null) selectedImage = null;
-                                          });
-                                        },
-                                      ),
+                                        AddNoteColorSelector(
+                                          selectedColor: selectedColor,
+                                          onColorSelected: (color) {
+                                            setState(() {
+                                              selectedColor = color;
+                                              if (color != null) selectedImage = null;
+                                            });
+                                          },
+                                        ),
 
-                                      const SizedBox(height: 14),
+                                        const SizedBox(height: 14),
 
-                                      AddNoteFooter(
-                                        createdAt: widget.note?.createdAt ?? DateTime.now(),
-                                        onImageSelected: (image) {
-                                          setState(() {
-                                            selectedImage = image;
-                                            selectedColor = null;
-                                          });
-                                        },
-                                      ),
-                                    ],
+                                        AddNoteFooter(
+                                          createdAt: widget.note?.createdAt ?? DateTime.now(),
+                                          onImageSelected: (image) {
+                                            setState(() {
+                                              selectedImage = image;
+                                              selectedColor = null;
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+
   }
+
 
   void handleBackPress() {
     bool hasChanges =
