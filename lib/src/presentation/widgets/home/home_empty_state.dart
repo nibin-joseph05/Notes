@@ -10,11 +10,7 @@ class HomeEmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            FontAwesomeIcons.noteSticky,
-            size: 90,
-            color: Colors.white24,
-          ),
+          Icon(FontAwesomeIcons.noteSticky, size: 90, color: Colors.white24),
           SizedBox(height: 22),
           Text(
             "There is no notes",
@@ -27,14 +23,10 @@ class HomeEmptyState extends StatelessWidget {
           SizedBox(height: 10),
           Text(
             "✎ Make a new one",
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white54,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.white54),
           ),
         ],
       ),
     );
   }
-
 }

@@ -16,10 +16,7 @@ class SettingsScreen extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Settings"),
-        elevation: 0,
-      ),
+      appBar: AppBar(title: const Text("Settings"), elevation: 0),
       body: Stack(
         children: [
           const AppBackground(),
@@ -31,13 +28,11 @@ class SettingsScreen extends ConsumerWidget {
                 final isTablet = width >= 700;
                 final isDesktop = width >= 1100;
 
-
                 final double maxContentWidth = isDesktop
                     ? 900
                     : isTablet
                     ? 750
                     : width;
-
 
                 final double horizontalPadding = width >= 1100
                     ? width * 0.12
@@ -54,18 +49,14 @@ class SettingsScreen extends ConsumerWidget {
                         vertical: isTablet ? 26 : 18,
                       ),
                       children: [
-
                         _sectionCard(
                           title: "General",
                           subtitle: "Permissions & system access",
                           icon: Icons.tune_rounded,
-                          children: const [
-                            PermissionWidget(),
-                          ],
+                          children: const [PermissionWidget()],
                         ),
 
                         SizedBox(height: isTablet ? 30 : 22),
-
 
                         _sectionCard(
                           title: "Appearance",
@@ -74,7 +65,9 @@ class SettingsScreen extends ConsumerWidget {
                           children: [
                             _settingsTile(child: const FontSelectorWidget()),
                             SizedBox(height: isTablet ? 16 : 12),
-                            _settingsTile(child: const WallpaperSelectorWidget()),
+                            _settingsTile(
+                              child: const WallpaperSelectorWidget(),
+                            ),
                             SizedBox(height: isTablet ? 16 : 12),
                             _settingsTile(child: const ThemeModeWidget()),
                           ],
@@ -94,7 +87,6 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
-
 
   static Widget _sectionCard({
     required String title,
@@ -164,7 +156,6 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-
   static Widget _settingsTile({required Widget child}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -176,7 +167,6 @@ class SettingsScreen extends ConsumerWidget {
       child: child,
     );
   }
-
 
   static Widget _footerInfo({required double fontSize}) {
     return Padding(

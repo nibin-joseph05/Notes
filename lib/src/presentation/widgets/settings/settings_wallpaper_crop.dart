@@ -55,7 +55,7 @@ class _WallpaperCropScreenState extends State<WallpaperCropScreen> {
               child: const Center(
                 child: CircularProgressIndicator(color: Colors.white),
               ),
-            )
+            ),
         ],
       ),
 

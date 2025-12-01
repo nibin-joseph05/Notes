@@ -35,8 +35,7 @@ class _PermissionWidgetState extends ConsumerState<PermissionWidget>
 
   Future<void> checkPermission() async {
     final status = await Permission.microphone.status;
-    ref.read(settingsProvider.notifier)
-        .toggleVoicePermission(status.isGranted);
+    ref.read(settingsProvider.notifier).toggleVoicePermission(status.isGranted);
   }
 
   Future<void> requestMic() async {
@@ -55,8 +54,7 @@ class _PermissionWidgetState extends ConsumerState<PermissionWidget>
         if (val) {
           await requestMic();
         } else {
-          ref.read(settingsProvider.notifier)
-              .toggleVoicePermission(false);
+          ref.read(settingsProvider.notifier).toggleVoicePermission(false);
         }
       },
     );

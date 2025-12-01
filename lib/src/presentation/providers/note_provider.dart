@@ -5,7 +5,7 @@ import '../../domain/repositories/note_repository_impl.dart';
 final noteRepositoryProvider = Provider((ref) => NoteRepositoryImpl());
 
 final notesProvider = StateNotifierProvider<NotesNotifier, List<NoteEntity>>(
-      (ref) => NotesNotifier(ref.read(noteRepositoryProvider)),
+  (ref) => NotesNotifier(ref.read(noteRepositoryProvider)),
 );
 
 class NotesNotifier extends StateNotifier<List<NoteEntity>> {
@@ -48,5 +48,4 @@ class NotesNotifier extends StateNotifier<List<NoteEntity>> {
     await repository.saveNote(updated);
     await loadNotes();
   }
-
 }

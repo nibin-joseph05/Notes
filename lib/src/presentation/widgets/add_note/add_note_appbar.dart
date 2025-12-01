@@ -58,7 +58,6 @@ class AddNoteAppBar extends StatelessWidget {
                   ),
                 ),
               ],
-
             ),
           ),
         ),

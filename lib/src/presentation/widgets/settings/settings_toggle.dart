@@ -18,10 +18,7 @@ class SettingsToggle extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: const TextStyle(color: Colors.white, fontSize: 16),
-        ),
+        Text(title, style: const TextStyle(color: Colors.white, fontSize: 16)),
         FlutterSwitch(
           value: value,
           width: 55,

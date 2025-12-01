@@ -62,7 +62,6 @@ class _WallpaperDialog extends ConsumerWidget {
     final notifier = ref.read(settingsProvider.notifier);
     final size = MediaQuery.of(context).size;
 
-
     final dialogWidth = size.width * 0.88;
     final previewHeight = size.height * 0.24;
     final isSmallPhone = size.height < 650;
@@ -97,7 +96,7 @@ class _WallpaperDialog extends ConsumerWidget {
                     image: settings.wallpaperPath.isNotEmpty
                         ? FileImage(File(settings.wallpaperPath))
                         : const AssetImage("assets/bg-image/bg.webp")
-                    as ImageProvider,
+                              as ImageProvider,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -115,7 +114,9 @@ class _WallpaperDialog extends ConsumerWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.greenAccent,
                       foregroundColor: Colors.black,
-                      padding: EdgeInsets.symmetric(vertical: isSmallPhone ? 10 : 12),
+                      padding: EdgeInsets.symmetric(
+                        vertical: isSmallPhone ? 10 : 12,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(13),
                       ),
@@ -131,7 +132,9 @@ class _WallpaperDialog extends ConsumerWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white12,
                       foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(vertical: isSmallPhone ? 10 : 12),
+                      padding: EdgeInsets.symmetric(
+                        vertical: isSmallPhone ? 10 : 12,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(13),
                       ),

@@ -27,11 +27,7 @@ class HomeNoteActions extends StatelessWidget {
         children: [
           _item(Icons.edit, "Edit", onEdit),
           _item(Icons.delete_outline, "Delete", onDelete),
-          _item(
-            Icons.push_pin,
-            isPinned ? "Unpin" : "Pin",
-            onPinToggle,
-          ),
+          _item(Icons.push_pin, isPinned ? "Unpin" : "Pin", onPinToggle),
         ],
       ),
     );

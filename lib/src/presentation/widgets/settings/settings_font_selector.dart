@@ -69,12 +69,12 @@ class FontSelectorWidget extends ConsumerWidget {
                   color: Colors.white.withOpacity(isSelected ? 0.14 : 0.05),
                   boxShadow: isSelected
                       ? [
-                    BoxShadow(
-                      color: Colors.greenAccent.withOpacity(0.22),
-                      blurRadius: 12,
-                      spreadRadius: 1,
-                    )
-                  ]
+                          BoxShadow(
+                            color: Colors.greenAccent.withOpacity(0.22),
+                            blurRadius: 12,
+                            spreadRadius: 1,
+                          ),
+                        ]
                       : [],
                 ),
                 child: Column(
@@ -110,14 +110,18 @@ class FontSelectorWidget extends ConsumerWidget {
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 220),
                         child: isSelected
-                            ? const Icon(Icons.check_circle,
-                            key: ValueKey(1),
-                            color: Colors.greenAccent,
-                            size: 20)
-                            : const Icon(Icons.circle_outlined,
-                            key: ValueKey(2),
-                            color: Colors.white38,
-                            size: 20),
+                            ? const Icon(
+                                Icons.check_circle,
+                                key: ValueKey(1),
+                                color: Colors.greenAccent,
+                                size: 20,
+                              )
+                            : const Icon(
+                                Icons.circle_outlined,
+                                key: ValueKey(2),
+                                color: Colors.white38,
+                                size: 20,
+                              ),
                       ),
                     ),
                   ],

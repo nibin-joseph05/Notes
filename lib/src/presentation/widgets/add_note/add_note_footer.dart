@@ -39,12 +39,20 @@ class AddNoteFooter extends StatelessWidget {
         IconButton(
           onPressed: () => pickImage(ImageSource.gallery),
           tooltip: "Choose from gallery",
-          icon: const Icon(FontAwesomeIcons.image, size: 22, color: Colors.white),
+          icon: const Icon(
+            FontAwesomeIcons.image,
+            size: 22,
+            color: Colors.white,
+          ),
         ),
         IconButton(
           onPressed: () => pickImage(ImageSource.camera),
           tooltip: "Take a photo",
-          icon: const Icon(FontAwesomeIcons.camera, size: 22, color: Colors.white),
+          icon: const Icon(
+            FontAwesomeIcons.camera,
+            size: 22,
+            color: Colors.white,
+          ),
         ),
         IconButton(
           onPressed: () {
@@ -56,7 +64,11 @@ class AddNoteFooter extends StatelessWidget {
             );
           },
           tooltip: "Record voice (coming soon)",
-          icon: const Icon(FontAwesomeIcons.microphone, size: 22, color: Colors.white),
+          icon: const Icon(
+            FontAwesomeIcons.microphone,
+            size: 22,
+            color: Colors.white,
+          ),
         ),
 
         const Spacer(),
@@ -82,11 +94,20 @@ class AddNoteFooter extends StatelessWidget {
 
         PopupMenuButton(
           color: const Color(0xff1E1E1E),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          icon: const Icon(FontAwesomeIcons.ellipsisVertical, size: 20, color: Colors.white),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          icon: const Icon(
+            FontAwesomeIcons.ellipsisVertical,
+            size: 20,
+            color: Colors.white,
+          ),
           itemBuilder: (_) => [
             PopupMenuItem(
-              child: const Text("Set Reminder", style: TextStyle(color: Colors.white)),
+              child: const Text(
+                "Set Reminder",
+                style: TextStyle(color: Colors.white),
+              ),
               onTap: () {
                 Future.microtask(() {
                   showDialog(
@@ -94,7 +115,9 @@ class AddNoteFooter extends StatelessWidget {
                     builder: (_) => ReminderDialog(
                       onSetReminder: (dateTime) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Reminder set for: $dateTime")),
+                          SnackBar(
+                            content: Text("Reminder set for: $dateTime"),
+                          ),
                         );
                       },
                     ),

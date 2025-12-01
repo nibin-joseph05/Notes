@@ -24,36 +24,41 @@ class _SplashPageState extends ConsumerState<SplashPage>
   void initState() {
     super.initState();
 
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeInOut,
+    );
 
-    _fadeController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
-    _fadeAnimation = CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut);
+    _scaleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _scaleAnimation = Tween<double>(begin: 0.75, end: 1.0).animate(
+      CurvedAnimation(parent: _scaleController, curve: Curves.easeOutBack),
+    );
 
-
-    _scaleController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
-    _scaleAnimation =
-        Tween<double>(begin: 0.75, end: 1.0).animate(CurvedAnimation(
-          parent: _scaleController,
-          curve: Curves.easeOutBack,
-        ));
-
-
-    _textController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+    _textController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
     _textSlideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.4),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _textController,
-      curve: Curves.easeOut,
-    ));
-
+    ).animate(CurvedAnimation(parent: _textController, curve: Curves.easeOut));
 
     _scaleController.forward();
-    Future.delayed(const Duration(milliseconds: 250), () => _fadeController.forward());
-    Future.delayed(const Duration(milliseconds: 450), () => _textController.forward());
-
+    Future.delayed(
+      const Duration(milliseconds: 250),
+      () => _fadeController.forward(),
+    );
+    Future.delayed(
+      const Duration(milliseconds: 450),
+      () => _textController.forward(),
+    );
 
     Future.delayed(const Duration(milliseconds: 1500), () {
       Navigator.pushReplacementNamed(context, AppRoutes.home);
@@ -78,10 +83,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
           children: [
             ScaleTransition(
               scale: _scaleAnimation,
-              child: Image.asset(
-                "assets/logo/logo.webp",
-                width: 150,
-              ),
+              child: Image.asset("assets/logo/logo.webp", width: 150),
             ),
             const SizedBox(height: 18),
             SlideTransition(
@@ -103,9 +105,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
                 height: 35,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.6,
-                  valueColor: AlwaysStoppedAnimation(
-                    Color(0xFF121530),
-                  ),
+                  valueColor: AlwaysStoppedAnimation(Color(0xFF121530)),
                 ),
               ),
             ),

@@ -26,11 +26,13 @@ class HomeScreen extends ConsumerWidget {
             const AppBackground(),
             SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 10,
+                ),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final width = constraints.maxWidth;
-
 
                     int crossAxisCount() {
                       if (width >= 1500) return 6;
@@ -60,15 +62,18 @@ class HomeScreen extends ConsumerWidget {
                           Expanded(
                             child: SingleChildScrollView(
                               keyboardDismissBehavior:
-                              ScrollViewKeyboardDismissBehavior.onDrag,
+                                  ScrollViewKeyboardDismissBehavior.onDrag,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   if (pinnedNotes.isNotEmpty) ...[
                                     Row(
                                       children: const [
-                                        Icon(Icons.push_pin_rounded,
-                                            color: Colors.white, size: 22),
+                                        Icon(
+                                          Icons.push_pin_rounded,
+                                          color: Colors.white,
+                                          size: 22,
+                                        ),
                                         SizedBox(width: 8),
                                         Text(
                                           "Pinned",
@@ -84,26 +89,29 @@ class HomeScreen extends ConsumerWidget {
 
                                     GridView.builder(
                                       shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
                                       itemCount: pinnedNotes.length,
                                       gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: crossAxisCount(),
-                                        crossAxisSpacing: 14,
-                                        mainAxisSpacing: 14,
-                                        childAspectRatio: aspectRatio(),
-                                      ),
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: crossAxisCount(),
+                                            crossAxisSpacing: 14,
+                                            mainAxisSpacing: 14,
+                                            childAspectRatio: aspectRatio(),
+                                          ),
                                       itemBuilder: (_, i) =>
                                           HomeNoteCard(note: pinnedNotes[i]),
                                     ),
                                     const SizedBox(height: 30),
                                   ],
 
-
                                   Row(
                                     children: const [
-                                      Icon(Icons.notes_rounded,
-                                          color: Colors.white, size: 22),
+                                      Icon(
+                                        Icons.notes_rounded,
+                                        color: Colors.white,
+                                        size: 22,
+                                      ),
                                       SizedBox(width: 8),
                                       Text(
                                         "Notes",
@@ -119,15 +127,16 @@ class HomeScreen extends ConsumerWidget {
 
                                   GridView.builder(
                                     shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     itemCount: normalNotes.length,
                                     gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: crossAxisCount(),
-                                      crossAxisSpacing: 14,
-                                      mainAxisSpacing: 14,
-                                      childAspectRatio: aspectRatio(),
-                                    ),
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: crossAxisCount(),
+                                          crossAxisSpacing: 14,
+                                          mainAxisSpacing: 14,
+                                          childAspectRatio: aspectRatio(),
+                                        ),
                                     itemBuilder: (_, i) =>
                                         HomeNoteCard(note: normalNotes[i]),
                                   ),
@@ -140,7 +149,7 @@ class HomeScreen extends ConsumerWidget {
 
                         Center(
                           child: Text(
-                            "Dedicated to my sister, Nibina ❤️",
+                            "Designed & Developed by Nibin",
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 12,

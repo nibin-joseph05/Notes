@@ -34,12 +34,15 @@ class SettingsState {
 class SettingsNotifier extends StateNotifier<SettingsState> {
   late Box<SettingsHiveModel> _box;
 
-  SettingsNotifier() : super(SettingsState(
-    voicePermission: false,
-    fontFamily: "Poppins",
-    darkMode: true,
-    wallpaperPath: '',
-  )) {
+  SettingsNotifier()
+    : super(
+        SettingsState(
+          voicePermission: false,
+          fontFamily: "Poppins",
+          darkMode: true,
+          wallpaperPath: '',
+        ),
+      ) {
     _init();
   }
 
@@ -93,8 +96,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 }
 
-
-final settingsProvider =
-StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
-  return SettingsNotifier();
-});
+final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
+  (ref) {
+    return SettingsNotifier();
+  },
+);

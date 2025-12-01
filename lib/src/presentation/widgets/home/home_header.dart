@@ -20,7 +20,11 @@ class HomeHeader extends StatelessWidget {
             onTap: () {
               Navigator.pushNamed(context, AppRoutes.settings);
             },
-            child: const Icon(FontAwesomeIcons.bars, size: 22, color: Colors.white70),
+            child: const Icon(
+              FontAwesomeIcons.bars,
+              size: 22,
+              color: Colors.white70,
+            ),
           ),
 
           const SizedBox(width: 12),

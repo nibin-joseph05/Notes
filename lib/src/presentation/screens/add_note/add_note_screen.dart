@@ -57,7 +57,6 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
         resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
-
             const AppBackground(),
 
             if (selectedImage != null)
@@ -65,7 +64,10 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
 
             SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 16,
+                ),
                 child: Column(
                   children: [
                     AddNoteAppBar(
@@ -73,14 +75,14 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                       onBack: () => Navigator.pop(context),
                       onPinToggle: () => setState(() => isPinned = !isPinned),
 
-
                       onSave: () {
                         final title = titleCtrl.text.trim();
                         final body = bodyCtrl.text.trim();
 
                         if (widget.note == null) {
                           final newNote = NoteEntity(
-                            id: DateTime.now().millisecondsSinceEpoch.toString(),
+                            id: DateTime.now().millisecondsSinceEpoch
+                                .toString(),
                             title: title.isEmpty ? "Untitled" : title,
                             body: body,
                             isPinned: isPinned,
@@ -106,7 +108,6 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                         }
 
                         Navigator.pop(context);
-
                       },
                     ),
 
@@ -115,7 +116,9 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: selectedColor != null ? Color(selectedColor!) : Colors.transparent,
+                          color: selectedColor != null
+                              ? Color(selectedColor!)
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         padding: const EdgeInsets.all(12),
@@ -143,7 +146,6 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                     ),
                     SizedBox(height: 14),
 
-
                     AddNoteColorSelector(
                       selectedColor: selectedColor,
                       onColorSelected: (color) {
@@ -155,7 +157,6 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                     ),
                     const SizedBox(height: 14),
 
-
                     AddNoteFooter(
                       createdAt: widget.note?.createdAt ?? DateTime.now(),
                       onImageSelected: (image) {
@@ -164,9 +165,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                           selectedColor = null;
                         });
                       },
-
-                    )
-
+                    ),
                   ],
                 ),
               ),

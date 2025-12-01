@@ -11,10 +11,7 @@ class HomeAddButton extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: const LinearGradient(
-          colors: [
-            Color(0xff4C7CFD),
-            Color(0xffA338FD),
-          ],
+          colors: [Color(0xff4C7CFD), Color(0xffA338FD)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

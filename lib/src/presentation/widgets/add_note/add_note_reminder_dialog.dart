@@ -20,19 +20,35 @@ class _HomeReminderDialogState extends State<ReminderDialog> {
       lastDate: DateTime(2100),
     );
     if (date == null) return;
-    setState(() => selectedDateTime = DateTime(
-        date.year, date.month, date.day, selectedDateTime.hour, selectedDateTime.minute));
+    setState(
+      () => selectedDateTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        selectedDateTime.hour,
+        selectedDateTime.minute,
+      ),
+    );
   }
 
   Future<void> pickTime() async {
     final time = await showTimePicker(
       context: context,
-      initialTime:
-      TimeOfDay(hour: selectedDateTime.hour, minute: selectedDateTime.minute),
+      initialTime: TimeOfDay(
+        hour: selectedDateTime.hour,
+        minute: selectedDateTime.minute,
+      ),
     );
     if (time == null) return;
-    setState(() => selectedDateTime = DateTime(
-        selectedDateTime.year, selectedDateTime.month, selectedDateTime.day, time.hour, time.minute));
+    setState(
+      () => selectedDateTime = DateTime(
+        selectedDateTime.year,
+        selectedDateTime.month,
+        selectedDateTime.day,
+        time.hour,
+        time.minute,
+      ),
+    );
   }
 
   @override
@@ -72,7 +88,9 @@ class _HomeReminderDialogState extends State<ReminderDialog> {
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal, foregroundColor: Colors.white),
+            backgroundColor: Colors.teal,
+            foregroundColor: Colors.white,
+          ),
           onPressed: () {
             widget.onSetReminder(selectedDateTime);
             Navigator.pop(context);

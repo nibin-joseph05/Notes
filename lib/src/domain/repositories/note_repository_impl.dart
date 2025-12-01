@@ -41,17 +41,21 @@ class NoteRepositoryImpl implements NoteRepository {
   @override
   Future<List<NoteEntity>> getNotes() async {
     final hiveNotes = notesBox.values.cast<NoteHiveModel>().toList();
-    return hiveNotes.map((n) => NoteEntity(
-      id: n.id,
-      title: n.title,
-      body: n.body,
-      imageUrl: n.imageUrl,
-      bgColor: n.bgColor,
-      fontFamily: n.fontFamily,
-      isPinned: n.pinned,
-      createdAt: n.createdAt,
-      updatedAt: n.updatedAt,
-    )).toList();
+    return hiveNotes
+        .map(
+          (n) => NoteEntity(
+            id: n.id,
+            title: n.title,
+            body: n.body,
+            imageUrl: n.imageUrl,
+            bgColor: n.bgColor,
+            fontFamily: n.fontFamily,
+            isPinned: n.pinned,
+            createdAt: n.createdAt,
+            updatedAt: n.updatedAt,
+          ),
+        )
+        .toList();
   }
 
   @override

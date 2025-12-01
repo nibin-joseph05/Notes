@@ -46,7 +46,9 @@ class AddNoteColorSelector extends StatelessWidget {
                     color: Colors.black26,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: selectedColor == null ? Colors.white : Colors.transparent,
+                      color: selectedColor == null
+                          ? Colors.white
+                          : Colors.transparent,
                       width: 2,
                     ),
                   ),

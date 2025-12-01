@@ -13,9 +13,7 @@ import 'src/data/models/note_hive_model.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await Hive.initFlutter();
   Hive.registerAdapter(NoteHiveModelAdapter());
@@ -41,4 +39,3 @@ class NotesApp extends ConsumerWidget {
     );
   }
 }
-
