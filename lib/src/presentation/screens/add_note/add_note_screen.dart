@@ -61,8 +61,6 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
         body: Stack(
           children: [
             const AppBackground(),
-            if (selectedImage != null)
-              AddNoteBackground(imagePath: selectedImage!.path),
 
             SafeArea(
               child: Center(
@@ -76,7 +74,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                     children: [
                       AddNoteAppBar(
                         isPinned: isPinned,
-                        onBack: () => Navigator.pop(context),
+                        onBack: handleBackPress,
                         onPinToggle: () => setState(() => isPinned = !isPinned),
                         onSave: saveNote,
                       ),
@@ -98,11 +96,32 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            color: selectedColor != null
-                                                ? Color(selectedColor!)
-                                                : Colors.transparent,
                                             borderRadius: BorderRadius.circular(14),
+
+                                            image: selectedImage != null
+                                                ? DecorationImage(
+                                              image: FileImage(selectedImage!),
+                                              fit: BoxFit.cover,
+                                            )
+                                                : null,
+                                            gradient: selectedImage == null && selectedColor != null
+                                                ? LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Color(selectedColor!).withOpacity(0.75),
+                                                Color(selectedColor!),
+                                                Color(selectedColor!).withOpacity(0.75),
+                                              ],
+                                            )
+                                                : null,
                                           ),
+                                          foregroundDecoration: selectedImage != null
+                                              ? BoxDecoration(
+                                            color: Colors.black.withOpacity(0.25),
+                                            borderRadius: BorderRadius.circular(14),
+                                          )
+                                              : null,
                                           padding: const EdgeInsets.all(14),
                                           child: AddNoteFields(
                                             titleController: titleCtrl,
@@ -161,6 +180,50 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void handleBackPress() {
+    bool hasChanges =
+        titleCtrl.text.trim() != (widget.note?.title ?? "").trim() ||
+            bodyCtrl.text.trim() != (widget.note?.body ?? "").trim() ||
+            isPinned != (widget.note?.isPinned ?? false) ||
+            selectedFont != (widget.note?.fontFamily) ||
+            selectedColor != (widget.note?.bgColor) ||
+            (selectedImage?.path ?? "") != (widget.note?.imageUrl ?? "");
+
+    if (!hasChanges) {
+      Navigator.pop(context);
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        backgroundColor: const Color(0xff1E1E1E),
+        title: const Text(
+          "Discard changes?",
+          style: TextStyle(color: Colors.white),
+        ),
+        content: const Text(
+          "You have unsaved changes. If you go back now, they will be lost.",
+          style: TextStyle(color: Colors.white70, height: 1.4),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel", style: TextStyle(color: Colors.white70)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+            child: const Text("Discard", style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }

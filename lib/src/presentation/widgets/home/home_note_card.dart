@@ -121,20 +121,35 @@ class HomeNoteCard extends ConsumerWidget {
               child: hasImage
                   ? _AnimatedNoteImage(path: note.imageUrl!)
                   : hasColor
-                  ? Container(color: Color(note.bgColor!))
+                  ? Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(note.bgColor!).withOpacity(0.75),
+                      Color(note.bgColor!),
+                      Color(note.bgColor!).withOpacity(0.75),
+                    ],
+                  ),
+                ),
+              )
                   : Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xff1c1c1c), Color(0xff000000)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                    ),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xff1c1c1c), Color(0xff000000)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+              ),
+
             ),
 
             Positioned.fill(
-              child: Container(color: Colors.black.withOpacity(0.22)),
+              child: Container(
+                color: hasImage ? Colors.black.withOpacity(0.22) : Colors.transparent,
+              ),
             ),
 
             Padding(
@@ -246,8 +261,8 @@ class _AnimatedNoteImage extends StatelessWidget {
 
         return AnimatedOpacity(
           opacity: 1,
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOutCubic,
           child: child,
         );
       },

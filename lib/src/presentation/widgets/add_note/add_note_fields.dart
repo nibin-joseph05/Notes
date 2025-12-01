@@ -41,7 +41,11 @@ class AddNoteFields extends StatelessWidget {
           controller: bodyController,
           maxLines: null,
           keyboardType: TextInputType.multiline,
-          style: GoogleFonts.getFont(font, fontSize: 17, color: textColor),
+          style: GoogleFonts.getFont(
+            font,
+            fontSize: 17,
+            color: textColor,
+          ),
           decoration: InputDecoration(
             hintText: "Start typing...",
             hintStyle: TextStyle(color: textColor.withOpacity(0.55)),

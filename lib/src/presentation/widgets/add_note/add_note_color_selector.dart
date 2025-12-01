@@ -36,6 +36,7 @@ class AddNoteColorSelector extends StatelessWidget {
           itemCount: colors.length + 1,
           separatorBuilder: (_, __) => const SizedBox(width: 12),
           itemBuilder: (_, i) {
+
             if (i == 0) {
               return GestureDetector(
                 onTap: () => onColorSelected(null),
@@ -46,9 +47,7 @@ class AddNoteColorSelector extends StatelessWidget {
                     color: Colors.black26,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: selectedColor == null
-                          ? Colors.white
-                          : Colors.transparent,
+                      color: selectedColor == null ? Colors.white : Colors.transparent,
                       width: 2,
                     ),
                   ),
@@ -56,6 +55,7 @@ class AddNoteColorSelector extends StatelessWidget {
                 ),
               );
             }
+
 
             final color = colors[i - 1];
             final isSelected = selectedColor == color.value;
@@ -66,8 +66,16 @@ class AddNoteColorSelector extends StatelessWidget {
                 width: 34,
                 height: 34,
                 decoration: BoxDecoration(
-                  color: color,
                   shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      color.withOpacity(0.70),
+                      color,
+                      color.withOpacity(0.70),
+                    ],
+                  ),
                   border: Border.all(
                     color: isSelected ? Colors.white : Colors.transparent,
                     width: 2,
