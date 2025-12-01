@@ -30,7 +30,6 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   Color get textColor {
     if (selectedImage != null) return Colors.white;
     if (selectedColor != null) return Colors.black;
-    if (selectedColor != null) return Colors.black;
     return Colors.white;
   }
 
@@ -51,6 +50,9 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final isTablet = width >= 700;
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -58,115 +60,101 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
         body: Stack(
           children: [
             const AppBackground(),
-
             if (selectedImage != null)
               AddNoteBackground(imagePath: selectedImage!.path),
 
             SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 16,
-                ),
-                child: Column(
-                  children: [
-                    AddNoteAppBar(
-                      isPinned: isPinned,
-                      onBack: () => Navigator.pop(context),
-                      onPinToggle: () => setState(() => isPinned = !isPinned),
+              child: Center(
+                child: Container(
+                  width: isTablet ? 650 : double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isTablet ? 12 : 18,
+                    vertical: 16,
+                  ),
+                  child: Column(
+                    children: [
+                      AddNoteAppBar(
+                        isPinned: isPinned,
+                        onBack: () => Navigator.pop(context),
+                        onPinToggle: () => setState(() => isPinned = !isPinned),
+                        onSave: saveNote,
+                      ),
 
-                      onSave: () {
-                        final title = titleCtrl.text.trim();
-                        final body = bodyCtrl.text.trim();
+                      const SizedBox(height: 16),
 
-                        if (widget.note == null) {
-                          final newNote = NoteEntity(
-                            id: DateTime.now().millisecondsSinceEpoch
-                                .toString(),
-                            title: title.isEmpty ? "Untitled" : title,
-                            body: body,
-                            isPinned: isPinned,
-                            imageUrl: selectedImage?.path,
-                            bgColor: selectedColor,
-                            fontFamily: selectedFont,
-                            createdAt: DateTime.now(),
-                            updatedAt: DateTime.now(),
-                          );
-                          ref.read(notesProvider.notifier).addNote(newNote);
-                        } else {
-                          final updatedNote = widget.note!.copyWith(
-                            title: title.isEmpty ? "Untitled" : title,
-                            body: body,
-                            isPinned: isPinned,
-                            imageUrl: selectedImage?.path,
-                            bgColor: selectedColor,
-                            fontFamily: selectedFont,
-                            updatedAt: DateTime.now(),
-                          );
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: constraints.maxHeight,
+                                ),
+                                child: IntrinsicHeight(
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: selectedColor != null
+                                                ? Color(selectedColor!)
+                                                : Colors.transparent,
+                                            borderRadius: BorderRadius.circular(14),
+                                          ),
+                                          padding: const EdgeInsets.all(14),
+                                          child: AddNoteFields(
+                                            titleController: titleCtrl,
+                                            bodyController: bodyCtrl,
+                                            textColor: textColor,
+                                            fontFamily: selectedFont,
+                                          ),
+                                        ),
+                                      ),
 
-                          ref.read(notesProvider.notifier).addNote(updatedNote);
-                        }
+                                      const SizedBox(height: 14),
 
-                        Navigator.pop(context);
-                      },
-                    ),
+                                      AddNoteFontSelector(
+                                        selectedFont: selectedFont,
+                                        onFontSelected: (font) {
+                                          setState(() => selectedFont = font);
+                                        },
+                                      ),
 
-                    const SizedBox(height: 20),
+                                      const SizedBox(height: 14),
 
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: selectedColor != null
-                              ? Color(selectedColor!)
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.all(12),
-                        child: SingleChildScrollView(
-                          physics: BouncingScrollPhysics(),
-                          child: AddNoteFields(
-                            titleController: titleCtrl,
-                            bodyController: bodyCtrl,
-                            textColor: textColor,
-                            fontFamily: selectedFont,
-                          ),
+                                      AddNoteColorSelector(
+                                        selectedColor: selectedColor,
+                                        onColorSelected: (color) {
+                                          setState(() {
+                                            selectedColor = color;
+                                            if (color != null) selectedImage = null;
+                                          });
+                                        },
+                                      ),
+
+                                      const SizedBox(height: 14),
+
+                                      AddNoteFooter(
+                                        createdAt: widget.note?.createdAt ?? DateTime.now(),
+                                        onImageSelected: (image) {
+                                          setState(() {
+                                            selectedImage = image;
+                                            selectedColor = null;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
-                    ),
+                    ],
+                  ),
 
-                    const SizedBox(height: 10),
-
-                    AddNoteFontSelector(
-                      selectedFont: selectedFont,
-                      onFontSelected: (font) {
-                        setState(() {
-                          selectedFont = font;
-                        });
-                      },
-                    ),
-                    SizedBox(height: 14),
-
-                    AddNoteColorSelector(
-                      selectedColor: selectedColor,
-                      onColorSelected: (color) {
-                        setState(() {
-                          selectedColor = color;
-                          if (color != null) selectedImage = null;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 14),
-
-                    AddNoteFooter(
-                      createdAt: widget.note?.createdAt ?? DateTime.now(),
-                      onImageSelected: (image) {
-                        setState(() {
-                          selectedImage = image;
-                          selectedColor = null;
-                        });
-                      },
-                    ),
-                  ],
                 ),
               ),
             ),
@@ -174,5 +162,35 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
         ),
       ),
     );
+  }
+
+  void saveNote() {
+    final title = titleCtrl.text.trim();
+    final body = bodyCtrl.text.trim();
+
+    final noteToSave = widget.note == null
+        ? NoteEntity(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: title.isEmpty ? "Untitled" : title,
+      body: body,
+      isPinned: isPinned,
+      imageUrl: selectedImage?.path,
+      bgColor: selectedColor,
+      fontFamily: selectedFont,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    )
+        : widget.note!.copyWith(
+      title: title.isEmpty ? "Untitled" : title,
+      body: body,
+      isPinned: isPinned,
+      imageUrl: selectedImage?.path,
+      bgColor: selectedColor,
+      fontFamily: selectedFont,
+      updatedAt: DateTime.now(),
+    );
+
+    ref.read(notesProvider.notifier).addNote(noteToSave);
+    Navigator.pop(context);
   }
 }
