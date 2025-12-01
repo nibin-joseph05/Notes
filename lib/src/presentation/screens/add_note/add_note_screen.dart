@@ -29,9 +29,30 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   String? selectedFont;
 
   Color get textColor {
-    if (selectedImage != null) return Colors.white;
-    if (selectedColor != null) return Colors.black;
-    return Colors.white;
+    if (selectedImage != null && selectedImage!.existsSync()) {
+      try {
+        final bytes = selectedImage!.readAsBytesSync();
+        if (bytes.length > 3000) {
+          int mid = bytes.length ~/ 2;
+          int r = bytes[mid];
+          int g = bytes[mid + 1];
+          int b = bytes[mid + 2];
+          final brightness = (r * 299 + g * 587 + b * 114) / 1000;
+          return brightness > 150 ? Colors.black : Colors.white;
+        }
+      } catch (_) {}
+      return Colors.white;
+    }
+
+    if (selectedColor != null) {
+      final c = Color(selectedColor!);
+      final brightness =
+          (c.red * 299 + c.green * 587 + c.blue * 114) / 1000;
+      return brightness > 150 ? Colors.black : Colors.white;
+    }
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? Colors.white : Colors.black;
   }
 
   @override
@@ -124,10 +145,18 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                                             ),
                                             foregroundDecoration: selectedImage != null
                                                 ? BoxDecoration(
-                                              color: Colors.black.withOpacity(0.25),
                                               borderRadius: BorderRadius.circular(14),
+                                              gradient: LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                                  Colors.black.withOpacity(0.65),
+                                                  Colors.black.withOpacity(0.65),
+                                                ],
+                                              ),
                                             )
                                                 : null,
+
                                             padding: const EdgeInsets.all(14),
                                             child: AddNoteFields(
                                               titleController: titleCtrl,
