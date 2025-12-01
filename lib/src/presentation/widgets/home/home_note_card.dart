@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/presentation/screens/add_note/add_note_screen.dart';
 import 'package:notes/src/presentation/widgets/home/home_delete_dialog.dart';
 
@@ -16,7 +17,6 @@ class HomeNoteCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     if (note == null) {
       return Container(
         height: 120,
@@ -36,15 +36,13 @@ class HomeNoteCard extends ConsumerWidget {
 
     final hasImage = note.imageUrl != null && note.imageUrl!.isNotEmpty;
     final hasColor = note.bgColor != null;
+    final font = note.fontFamily ?? "Poppins";
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-
-      },
+      onTap: () {},
       onLongPress: () {
         HapticFeedback.mediumImpact();
-
         showDialog(
           context: context,
           barrierColor: Colors.black54,
@@ -66,11 +64,9 @@ class HomeNoteCard extends ConsumerWidget {
                     ),
                   );
                 },
-
                 onDelete: () {
                   Navigator.pop(context);
                   HapticFeedback.lightImpact();
-
                   showDialog(
                     context: context,
                     barrierDismissible: true,
@@ -83,7 +79,6 @@ class HomeNoteCard extends ConsumerWidget {
                     },
                   );
                 },
-
                 onPinToggle: () {
                   Navigator.pop(context);
                   ref.read(notesProvider.notifier).togglePin(note.id);
@@ -98,7 +93,6 @@ class HomeNoteCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(18),
         child: Stack(
           children: [
-
             Positioned.fill(
               child: hasImage
                   ? _AnimatedNoteImage(path: note.imageUrl!)
@@ -115,11 +109,9 @@ class HomeNoteCard extends ConsumerWidget {
               ),
             ),
 
-
             Positioned.fill(
               child: Container(color: Colors.black.withOpacity(0.22)),
             ),
-
 
             Padding(
               padding: const EdgeInsets.all(14),
@@ -130,7 +122,8 @@ class HomeNoteCard extends ConsumerWidget {
                     note.title ?? "",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: GoogleFonts.getFont(
+                      font,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -141,7 +134,8 @@ class HomeNoteCard extends ConsumerWidget {
                     note.body ?? "",
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: GoogleFonts.getFont(
+                      font,
                       fontSize: 14,
                       height: 1.32,
                       color: Colors.white70,
@@ -150,7 +144,8 @@ class HomeNoteCard extends ConsumerWidget {
                   const Spacer(),
                   Text(
                     "Updated: ${note.updatedAt.toString().substring(0, 10)}",
-                    style: const TextStyle(
+                    style: GoogleFonts.getFont(
+                      font,
                       fontSize: 12,
                       color: Colors.white60,
                     ),
@@ -158,7 +153,6 @@ class HomeNoteCard extends ConsumerWidget {
                 ],
               ),
             ),
-
 
             if (note.isPinned == true)
               Positioned(
@@ -184,7 +178,6 @@ class HomeNoteCard extends ConsumerWidget {
   }
 }
 
-
 class _AnimatedNoteImage extends StatelessWidget {
   final String path;
   const _AnimatedNoteImage({required this.path});
@@ -194,7 +187,6 @@ class _AnimatedNoteImage extends StatelessWidget {
     final file = File(path);
 
     if (!file.existsSync()) {
-
       return Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -212,7 +204,6 @@ class _AnimatedNoteImage extends StatelessWidget {
       frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
         if (wasSynchronouslyLoaded) return child;
 
-
         if (frame == null) {
           return Container(
             color: const Color(0xff111111),
@@ -229,7 +220,6 @@ class _AnimatedNoteImage extends StatelessWidget {
           );
         }
 
-
         return AnimatedOpacity(
           opacity: 1,
           duration: const Duration(milliseconds: 220),
@@ -238,7 +228,6 @@ class _AnimatedNoteImage extends StatelessWidget {
         );
       },
       errorBuilder: (context, error, stackTrace) {
-
         return Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(

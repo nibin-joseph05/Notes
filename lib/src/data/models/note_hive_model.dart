@@ -19,6 +19,9 @@ class NoteHiveModel {
   @HiveField(7)
   int? bgColor;
 
+  @HiveField(8)
+  String? fontFamily;
+
   @HiveField(4)
   bool pinned;
 
@@ -34,6 +37,7 @@ class NoteHiveModel {
     required this.body,
     this.imageUrl,
     this.bgColor,
+    this.fontFamily,
     required this.pinned,
     required this.createdAt,
     required this.updatedAt,

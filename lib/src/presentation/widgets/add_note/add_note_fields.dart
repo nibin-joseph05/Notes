@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AddNoteFields extends StatelessWidget {
   final TextEditingController titleController;
   final TextEditingController bodyController;
   final Color textColor;
+  final String? fontFamily;
 
   const AddNoteFields({
     super.key,
     required this.titleController,
     required this.bodyController,
     required this.textColor,
+    required this.fontFamily,
   });
 
   @override
   Widget build(BuildContext context) {
+    final font = fontFamily ?? "Poppins";
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
           controller: titleController,
-          style: TextStyle(
+          style: GoogleFonts.getFont(
+            font,
             fontSize: 28,
             fontWeight: FontWeight.w600,
             color: textColor,
@@ -35,9 +41,9 @@ class AddNoteFields extends StatelessWidget {
           controller: bodyController,
           maxLines: null,
           keyboardType: TextInputType.multiline,
-          style: TextStyle(
+          style: GoogleFonts.getFont(
+            font,
             fontSize: 17,
-            fontWeight: FontWeight.w400,
             color: textColor,
           ),
           decoration: InputDecoration(

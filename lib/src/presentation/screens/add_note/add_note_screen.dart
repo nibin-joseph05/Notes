@@ -6,6 +6,7 @@ import '../../providers/note_provider.dart';
 import '../../widgets/add_note/add_note_background.dart';
 import '../../widgets/add_note/add_note_appbar.dart';
 import '../../widgets/add_note/add_note_fields.dart';
+import '../../widgets/add_note/add_note_font_selector.dart';
 import '../../widgets/add_note/add_note_footer.dart';
 import '../../widgets/common/app_background.dart';
 import '../../widgets/add_note/add_note_color_selector.dart';
@@ -24,9 +25,11 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   bool isPinned = false;
   File? selectedImage;
   int? selectedColor;
+  String? selectedFont;
 
   Color get textColor {
     if (selectedImage != null) return Colors.white;
+    if (selectedColor != null) return Colors.black;
     if (selectedColor != null) return Colors.black;
     return Colors.white;
   }
@@ -42,6 +45,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
         selectedImage = File(widget.note!.imageUrl!);
       }
       selectedColor = widget.note?.bgColor;
+      selectedFont = widget.note?.fontFamily;
     }
   }
 
@@ -82,6 +86,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                             isPinned: isPinned,
                             imageUrl: selectedImage?.path,
                             bgColor: selectedColor,
+                            fontFamily: selectedFont,
                             createdAt: DateTime.now(),
                             updatedAt: DateTime.now(),
                           );
@@ -92,8 +97,11 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                             body: body,
                             isPinned: isPinned,
                             imageUrl: selectedImage?.path,
+                            bgColor: selectedColor,
+                            fontFamily: selectedFont,
                             updatedAt: DateTime.now(),
                           );
+
                           ref.read(notesProvider.notifier).addNote(updatedNote);
                         }
 
@@ -117,12 +125,24 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                             titleController: titleCtrl,
                             bodyController: bodyCtrl,
                             textColor: textColor,
+                            fontFamily: selectedFont,
                           ),
                         ),
                       ),
                     ),
 
                     const SizedBox(height: 10),
+
+                    AddNoteFontSelector(
+                      selectedFont: selectedFont,
+                      onFontSelected: (font) {
+                        setState(() {
+                          selectedFont = font;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 14),
+
 
                     AddNoteColorSelector(
                       selectedColor: selectedColor,
