@@ -27,6 +27,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   File? selectedImage;
   int? selectedColor;
   String? selectedFont;
+  File? selectedAudio;
 
   Color get textColor {
     if (selectedImage != null && selectedImage!.existsSync()) {
@@ -198,7 +199,13 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                                               selectedColor = null;
                                             });
                                           },
+                                          onAudioSelected: (audioFile) {
+                                            setState(() {
+                                              selectedAudio = audioFile;
+                                            });
+                                          },
                                         ),
+
                                       ],
                                     ),
                                   ),

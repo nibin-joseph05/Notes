@@ -5,20 +5,18 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:notes/src/presentation/widgets/add_note/add_note_reminder_dialog.dart';
 
+import 'add_note_audio_recorder.dart';
+
 class AddNoteFooter extends StatelessWidget {
   final void Function(File?) onImageSelected;
   final DateTime createdAt;
-  final VoidCallback? onShare;
-  final VoidCallback? onDuplicate;
-  final VoidCallback? onDeleteImage;
+  final void Function(File?) onAudioSelected;
 
   const AddNoteFooter({
     super.key,
     required this.onImageSelected,
     required this.createdAt,
-    this.onShare,
-    this.onDuplicate,
-    this.onDeleteImage,
+    required this.onAudioSelected,
   });
 
   Future<void> pickImage(ImageSource source) async {
@@ -54,21 +52,9 @@ class AddNoteFooter extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        IconButton(
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Voice recording feature coming soon"),
-                duration: Duration(seconds: 2),
-              ),
-            );
-          },
-          tooltip: "Record voice (coming soon)",
-          icon: const Icon(
-            FontAwesomeIcons.microphone,
-            size: 22,
-            color: Colors.white,
-          ),
+
+        AddNoteAudioRecorder(
+          onFinished: (file) => onAudioSelected(file),
         ),
 
         const Spacer(),
