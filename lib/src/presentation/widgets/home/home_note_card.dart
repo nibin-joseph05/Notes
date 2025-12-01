@@ -83,7 +83,6 @@ class HomeNoteCard extends ConsumerWidget {
                         onConfirm: () async {
                           Navigator.pop(context);
                           final rootContext = Navigator.of(context, rootNavigator: true).context;
-                          // Show loader
                           if (!context.mounted) return;
                           showGlobalLoader(rootContext);
 
@@ -195,10 +194,9 @@ class HomeNoteCard extends ConsumerWidget {
                   const Spacer(),
                   Text(
                     "Updated: ${note.updatedAt.toString().substring(0, 10)}",
-                    style: GoogleFonts.getFont(
-                      font,
-                      fontSize: 12,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Colors.white60,
+                      fontSize: 12,
                     ),
                   ),
                 ],
