@@ -22,6 +22,9 @@ class NoteHiveModel {
   @HiveField(8)
   String? fontFamily;
 
+  @HiveField(9)
+  String? audioUrl;
+
   @HiveField(4)
   bool pinned;
 
@@ -38,6 +41,7 @@ class NoteHiveModel {
     this.imageUrl,
     this.bgColor,
     this.fontFamily,
+    this.audioUrl,
     required this.pinned,
     required this.createdAt,
     required this.updatedAt,

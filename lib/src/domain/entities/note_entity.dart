@@ -5,6 +5,7 @@ class NoteEntity {
   final String? imageUrl;
   final int? bgColor;
   final String? fontFamily;
+  final String? audioUrl;
   final bool isPinned;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -16,6 +17,7 @@ class NoteEntity {
     required this.imageUrl,
     required this.bgColor,
     required this.fontFamily,
+    required this.audioUrl,
     required this.isPinned,
     required this.createdAt,
     required this.updatedAt,
@@ -27,6 +29,7 @@ class NoteEntity {
     String? imageUrl,
     int? bgColor,
     String? fontFamily,
+    String? audioUrl,
     bool? isPinned,
     DateTime? updatedAt,
   }) {
@@ -37,6 +40,7 @@ class NoteEntity {
       imageUrl: imageUrl ?? this.imageUrl,
       bgColor: bgColor ?? this.bgColor,
       fontFamily: fontFamily ?? this.fontFamily,
+      audioUrl: audioUrl ?? this.audioUrl,
       isPinned: isPinned ?? this.isPinned,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

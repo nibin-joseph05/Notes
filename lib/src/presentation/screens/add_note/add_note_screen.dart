@@ -10,6 +10,7 @@ import '../../widgets/add_note/add_note_font_selector.dart';
 import '../../widgets/add_note/add_note_footer.dart';
 import '../../widgets/common/app_background.dart';
 import '../../widgets/add_note/add_note_color_selector.dart';
+import '../../widgets/common/audio_player_widget.dart';
 import '../../widgets/common/global_loader.dart';
 
 class AddNoteScreen extends ConsumerStatefulWidget {
@@ -28,6 +29,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   int? selectedColor;
   String? selectedFont;
   File? selectedAudio;
+  String? savedAudio;
 
   Color get textColor {
     if (selectedImage != null && selectedImage!.existsSync()) {
@@ -68,6 +70,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
       }
       selectedColor = widget.note?.bgColor;
       selectedFont = widget.note?.fontFamily;
+      savedAudio = widget.note?.audioUrl;
     }
   }
 
@@ -159,11 +162,40 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                                                 : null,
 
                                             padding: const EdgeInsets.all(14),
-                                            child: AddNoteFields(
-                                              titleController: titleCtrl,
-                                              bodyController: bodyCtrl,
-                                              textColor: textColor,
-                                              fontFamily: selectedFont,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                                              children: [
+                                                AddNoteFields(
+                                                  titleController: titleCtrl,
+                                                  bodyController: bodyCtrl,
+                                                  textColor: textColor,
+                                                  fontFamily: selectedFont,
+                                                ),
+
+                                                const SizedBox(height: 10),
+
+
+                                                if (selectedAudio != null && selectedAudio!.existsSync())
+                                                  AudioPlayerWidget(
+                                                    audioPath: selectedAudio!.path,
+                                                    onRemove: () {
+                                                      setState(() {
+                                                        selectedAudio = null;
+                                                      });
+                                                    },
+                                                  )
+
+
+                                                else if (savedAudio != null && File(savedAudio!).existsSync())
+                                                  AudioPlayerWidget(
+                                                    audioPath: savedAudio!,
+                                                    onRemove: () {
+                                                      setState(() {
+                                                        savedAudio = null;
+                                                      });
+                                                    },
+                                                  ),
+                                              ],
                                             ),
                                           ),
                                         ),
@@ -202,6 +234,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                                           onAudioSelected: (audioFile) {
                                             setState(() {
                                               selectedAudio = audioFile;
+                                              savedAudio = null;
                                             });
                                           },
                                         ),
@@ -330,6 +363,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
       imageUrl: selectedImage?.path,
       bgColor: selectedColor,
       fontFamily: selectedFont,
+      audioUrl: selectedAudio?.path ?? savedAudio,
       updatedAt: DateTime.now(),
     )
         : NoteEntity(
@@ -340,6 +374,8 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
       imageUrl: selectedImage?.path,
       bgColor: selectedColor,
       fontFamily: selectedFont,
+      audioUrl: selectedAudio?.path ?? savedAudio,
+
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );

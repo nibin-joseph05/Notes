@@ -26,13 +26,13 @@ class NoteHiveModelAdapter extends TypeAdapter<NoteHiveModel> {
       pinned: fields[4] as bool,
       createdAt: fields[5] as DateTime,
       updatedAt: fields[6] as DateTime,
-    );
+    )..audioUrl = fields[9] as String?;
   }
 
   @override
   void write(BinaryWriter writer, NoteHiveModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -45,6 +45,8 @@ class NoteHiveModelAdapter extends TypeAdapter<NoteHiveModel> {
       ..write(obj.bgColor)
       ..writeByte(8)
       ..write(obj.fontFamily)
+      ..writeByte(9)
+      ..write(obj.audioUrl)
       ..writeByte(4)
       ..write(obj.pinned)
       ..writeByte(5)
