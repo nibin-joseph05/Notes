@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class AddNoteColorSelector extends StatelessWidget {
   final int? selectedColor;
   final ValueChanged<int?> onColorSelected;
+  final bool hasImage; // Add this parameter to know if image is selected
 
   const AddNoteColorSelector({
     super.key,
     required this.selectedColor,
     required this.onColorSelected,
+    this.hasImage = false, // Default to false
   });
 
   @override
@@ -37,6 +39,9 @@ class AddNoteColorSelector extends StatelessWidget {
           separatorBuilder: (_, __) => const SizedBox(width: 12),
           itemBuilder: (_, i) {
             if (i == 0) {
+              // "No color/No background" option
+              final isSelected = selectedColor == null && !hasImage;
+
               return GestureDetector(
                 onTap: () => onColorSelected(null),
                 child: Container(
@@ -46,9 +51,7 @@ class AddNoteColorSelector extends StatelessWidget {
                     color: Colors.black26,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: selectedColor == null
-                          ? Colors.white
-                          : Colors.transparent,
+                      color: isSelected ? Colors.white : Colors.transparent,
                       width: 2,
                     ),
                   ),

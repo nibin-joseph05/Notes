@@ -87,12 +87,32 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
       titleCtrl.text = widget.note!.title;
       bodyCtrl.text = widget.note!.body;
       isPinned = widget.note!.isPinned;
-      if (widget.note!.imageUrl != null) {
-        selectedImage = File(widget.note!.imageUrl!);
+
+      // Fix: Check if image exists before setting it
+      if (widget.note!.imageUrl != null && widget.note!.imageUrl!.isNotEmpty) {
+        final imageFile = File(widget.note!.imageUrl!);
+        if (imageFile.existsSync()) {
+          selectedImage = imageFile;
+          selectedColor = null;
+        } else {
+          selectedImage = null;
+          selectedColor = widget.note?.bgColor;
+        }
+      } else {
+        selectedColor = widget.note?.bgColor;
+        selectedImage = null;
       }
-      selectedColor = widget.note?.bgColor;
+
       selectedFont = widget.note?.fontFamily;
-      savedAudio = widget.note?.audioUrl;
+
+      // Fix: Only set savedAudio if the file exists
+      if (widget.note?.audioUrl != null && widget.note!.audioUrl!.isNotEmpty) {
+        final audioFile = File(widget.note!.audioUrl!);
+        if (audioFile.existsSync()) {
+          savedAudio = widget.note!.audioUrl;
+        }
+      }
+
       _audioDeleted = false;
     }
     _hasInitialized = true;
@@ -201,6 +221,11 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                                                       fit: BoxFit.cover,
                                                     )
                                                   : null,
+                                              color:
+                                                  selectedImage == null &&
+                                                      selectedColor == null
+                                                  ? Colors.transparent
+                                                  : null,
                                               gradient:
                                                   selectedImage == null &&
                                                       selectedColor != null
@@ -290,10 +315,12 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                                           onColorSelected: (color) {
                                             setState(() {
                                               selectedColor = color;
-                                              if (color != null)
+                                              if (color != null) {
                                                 selectedImage = null;
+                                              }
                                             });
                                           },
+                                          hasImage: selectedImage != null,
                                         ),
 
                                         const SizedBox(height: 14),
@@ -351,24 +378,32 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
     bool pinChanged = isPinned != (widget.note?.isPinned ?? false);
     bool fontChanged = selectedFont != widget.note?.fontFamily;
     bool colorChanged = selectedColor != widget.note?.bgColor;
-    bool imageChanged =
-        (selectedImage?.path ?? "") != (widget.note?.imageUrl ?? "");
+    bool imageChanged = false;
+
+    // Fix for image change detection
+    final currentImagePath = selectedImage?.path ?? "";
+    final originalImagePath = widget.note?.imageUrl ?? "";
+    imageChanged = currentImagePath != originalImagePath;
 
     bool audioChanged = false;
 
-    if (selectedAudio != null) {
-      audioChanged = true;
-      print('Audio changed: New audio selected');
-    } else if (_audioDeleted) {
-      if (widget.note?.audioUrl != null && widget.note!.audioUrl!.isNotEmpty) {
-        audioChanged = true;
-        print('Audio changed: Audio was deleted');
-      }
+    // Fix for audio change detection
+    if (widget.note == null) {
+      // Creating new note - any audio selected is a change
+      audioChanged = selectedAudio != null || savedAudio != null;
     } else {
-      if (widget.note?.audioUrl != savedAudio) {
+      // Editing existing note
+      if (_audioDeleted) {
+        // Audio was deleted in this session
+        audioChanged = widget.note?.audioUrl != null;
+      } else if (selectedAudio != null) {
+        // New audio was selected
         audioChanged = true;
-        print('Audio changed: URL mismatch');
+      } else if (savedAudio != widget.note?.audioUrl) {
+        // Saved audio doesn't match original
+        audioChanged = savedAudio != widget.note?.audioUrl;
       }
+      // If savedAudio matches widget.note?.audioUrl, no change
     }
 
     bool hasChanges =
