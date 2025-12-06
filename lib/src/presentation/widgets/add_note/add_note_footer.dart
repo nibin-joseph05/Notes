@@ -30,7 +30,9 @@ class AddNoteFooter extends StatelessWidget {
     }
   }
 
-  bool get hasAudio => currentAudioFile != null || (currentAudioPath != null && currentAudioPath!.isNotEmpty);
+  bool get hasAudio =>
+      currentAudioFile != null ||
+      (currentAudioPath != null && currentAudioPath!.isNotEmpty);
 
   void _handleAudioRecorderPressed(BuildContext context) {
     if (hasAudio) {
@@ -87,7 +89,6 @@ class AddNoteFooter extends StatelessWidget {
           ),
         ),
 
-
         if (!hasAudio)
           AddNoteAudioRecorder(
             onFinished: (file) => onAudioSelected(file),
@@ -97,11 +98,7 @@ class AddNoteFooter extends StatelessWidget {
           IconButton(
             onPressed: () => _handleAudioRecorderPressed(context),
             tooltip: "Delete existing audio first",
-            icon: const Icon(
-              Icons.mic,
-              size: 26,
-              color: Colors.white38,
-            ),
+            icon: const Icon(Icons.mic, size: 26, color: Colors.white38),
           ),
 
         const Spacer(),

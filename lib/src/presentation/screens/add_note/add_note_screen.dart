@@ -30,7 +30,8 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   String? selectedFont;
   File? selectedAudio;
   String? savedAudio;
-  bool _audioDeleted = false; 
+  bool _audioDeleted = false;
+  bool _hasInitialized = false;
 
   Color get textColor {
     if (selectedImage != null && selectedImage!.existsSync()) {
@@ -61,10 +62,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   void _showSnackBar(String message, {Color? backgroundColor}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: const TextStyle(color: Colors.white),
-        ),
+        content: Text(message, style: const TextStyle(color: Colors.white)),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         backgroundColor: backgroundColor ?? const Color(0xff1E1E1E),
@@ -73,9 +71,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
           left: 16,
           right: 16,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
@@ -83,6 +79,10 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   @override
   void initState() {
     super.initState();
+    _initializeNoteData();
+  }
+
+  void _initializeNoteData() {
     if (widget.note != null) {
       titleCtrl.text = widget.note!.title;
       bodyCtrl.text = widget.note!.body;
@@ -93,12 +93,14 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
       selectedColor = widget.note?.bgColor;
       selectedFont = widget.note?.fontFamily;
       savedAudio = widget.note?.audioUrl;
+      _audioDeleted = false;
     }
+    _hasInitialized = true;
   }
 
-
-
   Future<void> _removeAudio() async {
+    final oldAudioPath = savedAudio;
+
     setState(() {
       selectedAudio = null;
       savedAudio = null;
@@ -109,24 +111,29 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
       showGlobalLoader(context);
 
       final updatedNote = widget.note!.copyWith(
-        audioUrl: null, 
+        audioUrl: null,
         updatedAt: DateTime.now(),
       );
 
       await ref.read(notesProvider.notifier).addNote(updatedNote);
 
+      if (oldAudioPath != null && oldAudioPath.isNotEmpty) {
+        try {
+          final file = File(oldAudioPath);
+          if (file.existsSync()) {
+            await file.delete();
+          }
+        } catch (e) {
+          print('Error deleting audio file: $e');
+        }
+      }
+
       hideGlobalLoader(context);
 
       await ref.read(notesProvider.notifier).loadNotes();
 
-      setState(() {
-        savedAudio = null;
-        _audioDeleted = true;
-      });
-
-      
       if (mounted) {
-        _showSnackBar("Audio removed. You can now record a new one.");
+        _showSnackBar("Audio removed successfully.");
       }
     }
   }
@@ -185,62 +192,60 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                                           child: Container(
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                              BorderRadius.circular(14),
-
+                                                  BorderRadius.circular(14),
                                               image: selectedImage != null
                                                   ? DecorationImage(
-                                                image: FileImage(
-                                                  selectedImage!,
-                                                ),
-                                                fit: BoxFit.cover,
-                                              )
+                                                      image: FileImage(
+                                                        selectedImage!,
+                                                      ),
+                                                      fit: BoxFit.cover,
+                                                    )
                                                   : null,
                                               gradient:
-                                              selectedImage == null &&
-                                                  selectedColor != null
+                                                  selectedImage == null &&
+                                                      selectedColor != null
                                                   ? LinearGradient(
-                                                begin:
-                                                Alignment.topCenter,
-                                                end: Alignment
-                                                    .bottomCenter,
-                                                colors: [
-                                                  Color(
-                                                    selectedColor!,
-                                                  ).withOpacity(0.75),
-                                                  Color(selectedColor!),
-                                                  Color(
-                                                    selectedColor!,
-                                                  ).withOpacity(0.75),
-                                                ],
-                                              )
+                                                      begin:
+                                                          Alignment.topCenter,
+                                                      end: Alignment
+                                                          .bottomCenter,
+                                                      colors: [
+                                                        Color(
+                                                          selectedColor!,
+                                                        ).withOpacity(0.75),
+                                                        Color(selectedColor!),
+                                                        Color(
+                                                          selectedColor!,
+                                                        ).withOpacity(0.75),
+                                                      ],
+                                                    )
                                                   : null,
                                             ),
                                             foregroundDecoration:
-                                            selectedImage != null
+                                                selectedImage != null
                                                 ? BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                14,
-                                              ),
-                                              gradient: LinearGradient(
-                                                begin:
-                                                Alignment.topCenter,
-                                                end: Alignment
-                                                    .bottomCenter,
-                                                colors: [
-                                                  Colors.black
-                                                      .withOpacity(0.65),
-                                                  Colors.black
-                                                      .withOpacity(0.65),
-                                                ],
-                                              ),
-                                            )
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          14,
+                                                        ),
+                                                    gradient: LinearGradient(
+                                                      begin:
+                                                          Alignment.topCenter,
+                                                      end: Alignment
+                                                          .bottomCenter,
+                                                      colors: [
+                                                        Colors.black
+                                                            .withOpacity(0.65),
+                                                        Colors.black
+                                                            .withOpacity(0.65),
+                                                      ],
+                                                    ),
+                                                  )
                                                 : null,
-
                                             padding: const EdgeInsets.all(14),
                                             child: Column(
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
+                                                  CrossAxisAlignment.stretch,
                                               children: [
                                                 AddNoteFields(
                                                   titleController: titleCtrl,
@@ -254,13 +259,15 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                                                 if (selectedAudio != null)
                                                   _buildAudioPlayerWidget(
                                                     audioFile: selectedAudio,
-                                                    onRemove: () => _removeAudio(),
+                                                    onRemove: () =>
+                                                        _removeAudio(),
                                                   )
                                                 else if (savedAudio != null &&
                                                     savedAudio!.isNotEmpty)
                                                   _buildAudioPlayerWidget(
                                                     audioPath: savedAudio,
-                                                    onRemove: () => _removeAudio(),
+                                                    onRemove: () =>
+                                                        _removeAudio(),
                                                   ),
                                               ],
                                             ),
@@ -293,7 +300,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
 
                                         AddNoteFooter(
                                           createdAt:
-                                          widget.note?.createdAt ??
+                                              widget.note?.createdAt ??
                                               DateTime.now(),
                                           onImageSelected: (image) {
                                             setState(() {
@@ -332,15 +339,48 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   }
 
   void handleBackPress() {
+    print('=== DEBUG: Checking for changes ===');
+    print('Original audio URL: ${widget.note?.audioUrl}');
+    print('Saved audio: $savedAudio');
+    print('Selected audio: ${selectedAudio?.path}');
+    print('Audio deleted flag: $_audioDeleted');
+
+    bool titleChanged =
+        titleCtrl.text.trim() != (widget.note?.title ?? "").trim();
+    bool bodyChanged = bodyCtrl.text.trim() != (widget.note?.body ?? "").trim();
+    bool pinChanged = isPinned != (widget.note?.isPinned ?? false);
+    bool fontChanged = selectedFont != widget.note?.fontFamily;
+    bool colorChanged = selectedColor != widget.note?.bgColor;
+    bool imageChanged =
+        (selectedImage?.path ?? "") != (widget.note?.imageUrl ?? "");
+
+    bool audioChanged = false;
+
+    if (selectedAudio != null) {
+      audioChanged = true;
+      print('Audio changed: New audio selected');
+    } else if (_audioDeleted) {
+      if (widget.note?.audioUrl != null && widget.note!.audioUrl!.isNotEmpty) {
+        audioChanged = true;
+        print('Audio changed: Audio was deleted');
+      }
+    } else {
+      if (widget.note?.audioUrl != savedAudio) {
+        audioChanged = true;
+        print('Audio changed: URL mismatch');
+      }
+    }
+
     bool hasChanges =
-        titleCtrl.text.trim() != (widget.note?.title ?? "").trim() ||
-            bodyCtrl.text.trim() != (widget.note?.body ?? "").trim() ||
-            isPinned != (widget.note?.isPinned ?? false) ||
-            selectedFont != (widget.note?.fontFamily) ||
-            selectedColor != (widget.note?.bgColor) ||
-            (selectedImage?.path ?? "") != (widget.note?.imageUrl ?? "") ||
-            _audioDeleted ||
-            selectedAudio != null;
+        titleChanged ||
+        bodyChanged ||
+        pinChanged ||
+        fontChanged ||
+        colorChanged ||
+        imageChanged ||
+        audioChanged;
+
+    print('Has changes: $hasChanges');
 
     if (!hasChanges) {
       Navigator.pop(context);
@@ -404,39 +444,38 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
 
     showGlobalLoader(context);
 
-    
     String? finalAudioUrl;
     if (_audioDeleted) {
-      finalAudioUrl = null; 
+      finalAudioUrl = null;
     } else if (selectedAudio != null) {
-      finalAudioUrl = selectedAudio!.path; 
+      finalAudioUrl = selectedAudio!.path;
     } else {
-      finalAudioUrl = savedAudio; 
+      finalAudioUrl = savedAudio;
     }
 
     final noteToSave = isEditing
         ? widget.note!.copyWith(
-      title: title.isEmpty ? "Untitled" : title,
-      body: body,
-      isPinned: isPinned,
-      imageUrl: selectedImage?.path,
-      bgColor: selectedColor,
-      fontFamily: selectedFont,
-      audioUrl: finalAudioUrl,
-      updatedAt: DateTime.now(),
-    )
+            title: title.isEmpty ? "Untitled" : title,
+            body: body,
+            isPinned: isPinned,
+            imageUrl: selectedImage?.path,
+            bgColor: selectedColor,
+            fontFamily: selectedFont,
+            audioUrl: finalAudioUrl,
+            updatedAt: DateTime.now(),
+          )
         : NoteEntity(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: title.isEmpty ? "Untitled" : title,
-      body: body,
-      isPinned: isPinned,
-      imageUrl: selectedImage?.path,
-      bgColor: selectedColor,
-      fontFamily: selectedFont,
-      audioUrl: finalAudioUrl,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            title: title.isEmpty ? "Untitled" : title,
+            body: body,
+            isPinned: isPinned,
+            imageUrl: selectedImage?.path,
+            bgColor: selectedColor,
+            fontFamily: selectedFont,
+            audioUrl: finalAudioUrl,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          );
 
     await ref.read(notesProvider.notifier).addNote(noteToSave);
 
@@ -450,12 +489,10 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
     String? audioPath,
     required VoidCallback onRemove,
   }) {
-    
     if (audioFile != null) {
       if (audioFile.existsSync()) {
         return AudioPlayerWidget(audioPath: audioFile.path, onRemove: onRemove);
       } else {
-        
         return _buildErrorAudioWidget(() {
           setState(() {
             selectedAudio = null;
@@ -466,39 +503,36 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
       }
     }
 
-    
     if (audioPath != null && audioPath.isNotEmpty) {
       final file = File(audioPath);
       if (file.existsSync()) {
         return AudioPlayerWidget(audioPath: audioPath, onRemove: onRemove);
       } else {
-        
         return _buildErrorAudioWidget(() {
           setState(() {
             selectedAudio = null;
             savedAudio = null;
             _audioDeleted = true;
           });
-          
+
           if (widget.note != null) {
-            ref.read(notesProvider.notifier).addNote(
-              widget.note!.copyWith(
-                audioUrl: null,
-                updatedAt: DateTime.now(),
-              ),
-            );
+            ref
+                .read(notesProvider.notifier)
+                .addNote(
+                  widget.note!.copyWith(
+                    audioUrl: null,
+                    updatedAt: DateTime.now(),
+                  ),
+                );
           }
         });
       }
     }
 
-    
     return const SizedBox();
   }
 
-
   Widget _buildErrorAudioWidget(VoidCallback onRemove) {
-    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         onRemove();
@@ -510,10 +544,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
       decoration: BoxDecoration(
         color: Colors.red.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.red.withOpacity(0.3),
-          width: 1,
-        ),
+        border: Border.all(color: Colors.red.withOpacity(0.3), width: 1),
       ),
       child: const Row(
         children: [
@@ -528,5 +559,13 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
         ],
       ),
     );
+  }
+
+  void _resetAudioState() {
+    setState(() {
+      selectedAudio = null;
+      savedAudio = null;
+      _audioDeleted = true;
+    });
   }
 }

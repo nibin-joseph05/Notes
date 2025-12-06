@@ -30,9 +30,10 @@ class _AddNoteAudioRecorderState extends State<AddNoteAudioRecorder>
   late AnimationController _animationController;
   late Animation<double> _animation;
 
-  
-  final StreamController<Duration> _durationController = StreamController<Duration>.broadcast();
-  final StreamController<bool> _pauseController = StreamController<bool>.broadcast();
+  final StreamController<Duration> _durationController =
+      StreamController<Duration>.broadcast();
+  final StreamController<bool> _pauseController =
+      StreamController<bool>.broadcast();
 
   @override
   void initState() {
@@ -111,10 +112,11 @@ class _AddNoteAudioRecorderState extends State<AddNoteAudioRecorder>
         });
       }
 
-      if (save && _recordingPath != null && File(_recordingPath!).existsSync()) {
+      if (save &&
+          _recordingPath != null &&
+          File(_recordingPath!).existsSync()) {
         widget.onFinished(File(_recordingPath!));
       } else if (_recordingPath != null) {
-        
         final file = File(_recordingPath!);
         if (file.existsSync()) {
           await file.delete();
@@ -207,11 +209,7 @@ class _AddNoteAudioRecorderState extends State<AddNoteAudioRecorder>
     final buttonColor = widget.buttonColor ?? Theme.of(context).primaryColor;
 
     return IconButton(
-      icon: Icon(
-        Icons.mic,
-        color: buttonColor,
-        size: 26,
-      ),
+      icon: Icon(Icons.mic, color: buttonColor, size: 26),
       onPressed: _startRecording,
       tooltip: 'Start recording',
     );
@@ -258,7 +256,6 @@ class _RecordingOverlayState extends State<RecordingOverlay> {
     _currentDuration = widget.duration;
     _currentIsPaused = widget.isPaused;
 
-    
     widget.durationStream.listen((duration) {
       if (mounted) {
         setState(() {
@@ -267,7 +264,6 @@ class _RecordingOverlayState extends State<RecordingOverlay> {
       }
     });
 
-    
     widget.pauseStream.listen((isPaused) {
       if (mounted) {
         setState(() {
@@ -431,8 +427,8 @@ class _WaveformPainter extends CustomPainter {
       final x = i * (barWidth + spacing);
       final height = isActive
           ? (centerY * 0.7 * (1 + 0.3 * (animationValue - 1))) *
-          (0.5 + 0.5 * (i % 3) / 3) *
-          (1 + 0.2 * ((i * animationValue) % 2))
+                (0.5 + 0.5 * (i % 3) / 3) *
+                (1 + 0.2 * ((i * animationValue) % 2))
           : centerY * 0.3;
 
       final rect = Rect.fromLTWH(x, centerY - height / 2, barWidth, height);

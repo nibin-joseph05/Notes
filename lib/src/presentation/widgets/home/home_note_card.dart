@@ -47,7 +47,7 @@ class HomeNoteCard extends ConsumerWidget {
           context,
           MaterialPageRoute(builder: (_) => AddNoteScreen(note: note)),
         );
-        
+
         ref.read(notesProvider.notifier).loadNotes();
       },
 
@@ -73,7 +73,7 @@ class HomeNoteCard extends ConsumerWidget {
                       builder: (_) => AddNoteScreen(note: note),
                     ),
                   );
-                  
+
                   ref.read(notesProvider.notifier).loadNotes();
                 },
                 onDelete: () {
@@ -141,27 +141,27 @@ class HomeNoteCard extends ConsumerWidget {
                   ? _AnimatedNoteImage(path: note.imageUrl!)
                   : hasColor
                   ? Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(note.bgColor!).withOpacity(0.75),
-                      Color(note.bgColor!),
-                      Color(note.bgColor!).withOpacity(0.75),
-                    ],
-                  ),
-                ),
-              )
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Color(note.bgColor!).withOpacity(0.75),
+                            Color(note.bgColor!),
+                            Color(note.bgColor!).withOpacity(0.75),
+                          ],
+                        ),
+                      ),
+                    )
                   : Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xff1c1c1c), Color(0xff000000)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-              ),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xff1c1c1c), Color(0xff000000)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                    ),
             ),
 
             Positioned.fill(

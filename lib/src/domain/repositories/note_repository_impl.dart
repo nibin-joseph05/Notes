@@ -11,7 +11,6 @@ class NoteRepositoryImpl implements NoteRepository {
 
   @override
   Future<void> saveNote(NoteEntity note) async {
-    
     final existingNote = notesBox.get(note.id);
     String? oldAudioPath;
 
@@ -19,30 +18,20 @@ class NoteRepositoryImpl implements NoteRepository {
       oldAudioPath = existingNote.audioUrl;
     }
 
-    
     if (oldAudioPath != null && oldAudioPath.isNotEmpty) {
-      
-      if (note.audioUrl == null || note.audioUrl!.isEmpty) {
-        final oldAudioFile = File(oldAudioPath);
-        if (oldAudioFile.existsSync()) {
-          try {
-            await oldAudioFile.delete();
-            print('Deleted old audio file: $oldAudioPath');
-          } catch (e) {
-            print('Error deleting old audio file: $e');
-          }
-        }
-      }
-      
-      else if (oldAudioPath != note.audioUrl) {
-        final oldAudioFile = File(oldAudioPath);
-        if (oldAudioFile.existsSync()) {
-          try {
-            await oldAudioFile.delete();
-            print('Deleted replaced audio file: $oldAudioPath');
-          } catch (e) {
-            print('Error deleting replaced audio file: $e');
-          }
+      final oldAudioFile = File(oldAudioPath);
+
+      bool shouldDeleteOldAudio =
+          note.audioUrl == null ||
+          note.audioUrl!.isEmpty ||
+          oldAudioPath != note.audioUrl;
+
+      if (shouldDeleteOldAudio && oldAudioFile.existsSync()) {
+        try {
+          await oldAudioFile.delete();
+          print('Deleted old audio file: $oldAudioPath');
+        } catch (e) {
+          print('Error deleting old audio file: $e');
         }
       }
     }
@@ -60,10 +49,8 @@ class NoteRepositoryImpl implements NoteRepository {
       updatedAt: note.updatedAt,
     );
 
-    
     await notesBox.put(note.id, model);
 
-    
     final Map<String, dynamic> firestoreData = {
       'title': note.title,
       'body': note.body,
@@ -72,7 +59,6 @@ class NoteRepositoryImpl implements NoteRepository {
       'updatedAt': note.updatedAt.toIso8601String(),
     };
 
-    
     if (note.imageUrl != null && note.imageUrl!.isNotEmpty) {
       firestoreData['imageUrl'] = note.imageUrl;
     } else {
@@ -106,24 +92,23 @@ class NoteRepositoryImpl implements NoteRepository {
     return hiveNotes
         .map(
           (n) => NoteEntity(
-        id: n.id,
-        title: n.title,
-        body: n.body,
-        imageUrl: n.imageUrl,
-        bgColor: n.bgColor,
-        fontFamily: n.fontFamily,
-        audioUrl: n.audioUrl,
-        isPinned: n.pinned,
-        createdAt: n.createdAt,
-        updatedAt: n.updatedAt,
-      ),
-    )
+            id: n.id,
+            title: n.title,
+            body: n.body,
+            imageUrl: n.imageUrl,
+            bgColor: n.bgColor,
+            fontFamily: n.fontFamily,
+            audioUrl: n.audioUrl,
+            isPinned: n.pinned,
+            createdAt: n.createdAt,
+            updatedAt: n.updatedAt,
+          ),
+        )
         .toList();
   }
 
   @override
   Future<void> deleteNote(String id) async {
-    
     final note = notesBox.get(id);
     if (note != null && note is NoteHiveModel) {
       if (note.audioUrl != null && note.audioUrl!.isNotEmpty) {
