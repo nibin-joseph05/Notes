@@ -10,6 +10,7 @@ import 'package:notes/src/presentation/widgets/home/home_delete_dialog.dart';
 import '../../providers/note_provider.dart';
 import 'home_note_actions.dart';
 import '../../widgets/common/global_loader.dart';
+
 class HomeNoteCard extends ConsumerWidget {
   final dynamic note;
   const HomeNoteCard({super.key, required this.note});
@@ -40,15 +41,15 @@ class HomeNoteCard extends ConsumerWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
 
-
-      onTap: () {
+      onTap: () async {
         HapticFeedback.lightImpact();
-        Navigator.push(
+        await Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => AddNoteScreen(note: note)),
         );
+        
+        ref.read(notesProvider.notifier).loadNotes();
       },
-
 
       onLongPress: () {
         HapticFeedback.mediumImpact();
@@ -64,12 +65,16 @@ class HomeNoteCard extends ConsumerWidget {
               backgroundColor: Colors.transparent,
               child: HomeNoteActions(
                 isPinned: note.isPinned,
-                onEdit: () {
+                onEdit: () async {
                   Navigator.pop(context);
-                  Navigator.push(
+                  await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => AddNoteScreen(note: note)),
+                    MaterialPageRoute(
+                      builder: (_) => AddNoteScreen(note: note),
+                    ),
                   );
+                  
+                  ref.read(notesProvider.notifier).loadNotes();
                 },
                 onDelete: () {
                   Navigator.pop(context);
@@ -82,16 +87,20 @@ class HomeNoteCard extends ConsumerWidget {
                       return HomeDeleteDialog(
                         onConfirm: () async {
                           Navigator.pop(context);
-                          final rootContext = Navigator.of(context, rootNavigator: true).context;
+                          final rootContext = Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).context;
                           if (!context.mounted) return;
                           showGlobalLoader(rootContext);
 
-                          await ref.read(notesProvider.notifier).deleteNote(note.id);
+                          await ref
+                              .read(notesProvider.notifier)
+                              .deleteNote(note.id);
 
                           if (!context.mounted) return;
 
                           hideGlobalLoader(rootContext);
-
                         },
                       );
                     },
@@ -123,7 +132,6 @@ class HomeNoteCard extends ConsumerWidget {
         );
       },
 
-
       child: ClipRRect(
         borderRadius: BorderRadius.circular(18),
         child: Stack(
@@ -154,12 +162,13 @@ class HomeNoteCard extends ConsumerWidget {
                   ),
                 ),
               ),
-
             ),
 
             Positioned.fill(
               child: Container(
-                color: hasImage ? Colors.black.withOpacity(0.22) : Colors.transparent,
+                color: hasImage
+                    ? Colors.black.withOpacity(0.22)
+                    : Colors.transparent,
               ),
             ),
 
