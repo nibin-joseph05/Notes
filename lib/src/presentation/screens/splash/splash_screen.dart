@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../src/core/routes/app_routes.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
@@ -20,9 +21,19 @@ class _SplashPageState extends ConsumerState<SplashPage>
   late AnimationController _textController;
   late Animation<Offset> _textSlideAnimation;
 
+  String _appVersion = "";
+
+
   @override
   void initState() {
     super.initState();
+
+    _loadVersion();
+
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
 
     _fadeController = AnimationController(
       vsync: this,
@@ -65,6 +76,14 @@ class _SplashPageState extends ConsumerState<SplashPage>
     });
   }
 
+  Future<void> _loadVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _appVersion = "v${info.version}";
+
+    });
+  }
+
   @override
   void dispose() {
     _fadeController.dispose();
@@ -100,14 +119,31 @@ class _SplashPageState extends ConsumerState<SplashPage>
             const SizedBox(height: 35),
             FadeTransition(
               opacity: _fadeAnimation,
-              child: SizedBox(
-                width: 35,
-                height: 35,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.6,
-                  valueColor: AlwaysStoppedAnimation(Color(0xFF121530)),
+              child : FadeTransition(
+                opacity: _fadeAnimation,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 35,
+                      height: 35,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.6,
+                        valueColor: AlwaysStoppedAnimation(Color(0xFF121530)),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      _appVersion,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white38,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+
             ),
           ],
         ),

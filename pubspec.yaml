@@ -29,6 +29,7 @@ dependencies:
   just_audio: ^0.9.38
   record: ^6.1.2
   audio_session: ^0.1.21
+  package_info_plus: ^8.0.0
 
 google_fonts:
   enable-runtime-fonts: false
