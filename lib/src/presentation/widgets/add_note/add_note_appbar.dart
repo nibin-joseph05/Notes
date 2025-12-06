@@ -35,7 +35,10 @@ class AddNoteAppBar extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         GestureDetector(
-          onTap: onSave,
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            onSave();
+          },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(

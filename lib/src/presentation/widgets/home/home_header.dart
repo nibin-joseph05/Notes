@@ -32,7 +32,7 @@ class HomeHeader extends StatelessWidget {
             child: TextField(
               decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: "Search your note...",
+                hintText: "Search coming soon! 😊",
                 hintStyle: TextStyle(color: Colors.white38, fontSize: 15),
               ),
               style: TextStyle(color: Colors.white),

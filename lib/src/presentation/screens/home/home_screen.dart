@@ -25,32 +25,14 @@ class HomeScreen extends ConsumerWidget {
           children: [
             const AppBackground(),
             SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 10,
-                ),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final width = constraints.maxWidth;
-
-                    int crossAxisCount() {
-                      if (width >= 1500) return 6;
-                      if (width >= 1100) return 5;
-                      if (width >= 900) return 4;
-                      if (width >= 650) return 3;
-                      return 2;
-                    }
-
-                    double aspectRatio() {
-                      if (width >= 1500) return 1.05;
-                      if (width >= 1100) return 0.97;
-                      if (width >= 900) return 0.93;
-                      if (width >= 650) return 0.88;
-                      return 0.80;
-                    }
-
-                    return Column(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: constraints.maxWidth > 600 ? 24 : 18,
+                      vertical: 10,
+                    ),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const HomeHeader(),
@@ -61,86 +43,128 @@ class HomeScreen extends ConsumerWidget {
                         else
                           Expanded(
                             child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
                               keyboardDismissBehavior:
                                   ScrollViewKeyboardDismissBehavior.onDrag,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (pinnedNotes.isNotEmpty) ...[
-                                    Row(
-                                      children: const [
-                                        Icon(
-                                          Icons.push_pin_rounded,
-                                          color: Colors.white,
-                                          size: 22,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: constraints.maxHeight - 100,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (pinnedNotes.isNotEmpty) ...[
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 12,
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          "Pinned",
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.05),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withOpacity(
+                                              0.1,
+                                            ),
                                           ),
                                         ),
-                                      ],
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.push_pin_rounded,
+                                              color: Colors.amber[300],
+                                              size: 20,
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Text(
+                                                "Pinned Notes",
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                              "${pinnedNotes.length} pinned",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white70,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+
+                                      ...List.generate(
+                                        pinnedNotes.length,
+                                        (index) => HomeNoteCard(
+                                          note: pinnedNotes[index],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 24),
+                                    ],
+
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.05),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: Colors.white.withOpacity(0.1),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.notes_rounded,
+                                            color: Colors.blue[300],
+                                            size: 20,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Text(
+                                              "All Notes",
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            "${normalNotes.length} notes",
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     const SizedBox(height: 12),
 
-                                    GridView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: pinnedNotes.length,
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: crossAxisCount(),
-                                            crossAxisSpacing: 14,
-                                            mainAxisSpacing: 14,
-                                            childAspectRatio: aspectRatio(),
-                                          ),
-                                      itemBuilder: (_, i) =>
-                                          HomeNoteCard(note: pinnedNotes[i]),
+                                    ...List.generate(
+                                      normalNotes.length,
+                                      (index) => HomeNoteCard(
+                                        note: normalNotes[index],
+                                      ),
                                     ),
-                                    const SizedBox(height: 30),
                                   ],
-
-                                  Row(
-                                    children: const [
-                                      Icon(
-                                        Icons.notes_rounded,
-                                        color: Colors.white,
-                                        size: 22,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        "Notes",
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 12),
-
-                                  GridView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: normalNotes.length,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: crossAxisCount(),
-                                          crossAxisSpacing: 14,
-                                          mainAxisSpacing: 14,
-                                          childAspectRatio: aspectRatio(),
-                                        ),
-                                    itemBuilder: (_, i) =>
-                                        HomeNoteCard(note: normalNotes[i]),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
                           ),
@@ -152,15 +176,15 @@ class HomeScreen extends ConsumerWidget {
                             "Designed & Developed by Nibin",
                             style: TextStyle(
                               color: Colors.white70,
-                              fontSize: 12,
+                              fontSize: constraints.maxWidth > 400 ? 12 : 11,
                               fontStyle: FontStyle.italic,
                             ),
                           ),
                         ),
                       ],
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ],
