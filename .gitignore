@@ -1,0 +1,12 @@
+# --- Flutter specific ---
+**/notes_app/.dart_tool/
+**/notes_app/build/
+**/notes_app/.flutter-plugins
+**/notes_app/.flutter-plugins-dependencies
+**/notes_app/*.log
+
+# --- .NET specific ---
+**/NotesBackend/bin/
+**/NotesBackend/obj/
+**/NotesBackend/.vs/
+**/NotesBackend/appsettings.Development.json
