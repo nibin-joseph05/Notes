@@ -96,7 +96,7 @@ NotesBackend/
 
 ---
 
-## 👨‍💻 Developer
+## 👨 Developer
 
 **Nibin Joseph**  
  Full-Stack & Flutter Developer  
