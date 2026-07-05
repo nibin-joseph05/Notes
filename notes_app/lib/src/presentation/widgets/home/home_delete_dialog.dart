@@ -39,7 +39,6 @@ class HomeDeleteDialog extends StatelessWidget {
           onPressed: () {
             HapticFeedback.heavyImpact();
             onConfirm();
-            Navigator.pop(context);
           },
           child: const Text("Delete"),
         ),

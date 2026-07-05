@@ -4,9 +4,23 @@ import '../../domain/repositories/note_repository_impl.dart';
 
 final noteRepositoryProvider = Provider((ref) => NoteRepositoryImpl());
 
+final searchQueryProvider = StateProvider<String>((ref) => '');
+
 final notesProvider = StateNotifierProvider<NotesNotifier, List<NoteEntity>>(
   (ref) => NotesNotifier(ref.read(noteRepositoryProvider)),
 );
+
+final filteredNotesProvider = Provider<List<NoteEntity>>((ref) {
+  final notes = ref.watch(notesProvider);
+  final query = ref.watch(searchQueryProvider).toLowerCase().trim();
+
+  if (query.isEmpty) return notes;
+
+  return notes.where((note) {
+    return note.title.toLowerCase().contains(query) ||
+           note.body.toLowerCase().contains(query);
+  }).toList();
+});
 
 class NotesNotifier extends StateNotifier<List<NoteEntity>> {
   final NoteRepositoryImpl repository;

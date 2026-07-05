@@ -10,3 +10,10 @@
 **/NotesBackend/obj/
 **/NotesBackend/.vs/
 **/NotesBackend/appsettings.Development.json
+
+# --- Environment files (secrets) ---
+**/.env
+
+# --- Local documentation ---
+**/NotesBackend/BACKEND_GUIDE.md
+

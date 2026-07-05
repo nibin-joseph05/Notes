@@ -8,7 +8,6 @@ import 'package:notes/src/presentation/widgets/home/home_delete_dialog.dart';
 
 import '../../providers/note_provider.dart';
 import 'home_note_actions.dart';
-import '../../widgets/common/global_loader.dart';
 import '../../widgets/common/audio_player_widget.dart';
 
 class HomeNoteCard extends ConsumerWidget {
@@ -64,7 +63,7 @@ class HomeNoteCard extends ConsumerWidget {
             showDialog(
               context: context,
               barrierColor: Colors.black54,
-              builder: (context) {
+              builder: (actionsDialogContext) {
                 return Dialog(
                   insetPadding: EdgeInsets.symmetric(
                     horizontal: MediaQuery.of(context).size.width * 0.15,
@@ -74,7 +73,7 @@ class HomeNoteCard extends ConsumerWidget {
                   child: HomeNoteActions(
                     isPinned: note.isPinned,
                     onEdit: () async {
-                      Navigator.pop(context);
+                      Navigator.pop(actionsDialogContext);
                       await Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -84,26 +83,19 @@ class HomeNoteCard extends ConsumerWidget {
                       ref.read(notesProvider.notifier).loadNotes();
                     },
                     onDelete: () {
-                      Navigator.pop(context);
+                      Navigator.pop(actionsDialogContext);
                       HapticFeedback.lightImpact();
                       showDialog(
                         context: context,
                         barrierDismissible: true,
-                        builder: (context) {
+                        builder: (confirmDialogContext) {
                           return HomeDeleteDialog(
                             onConfirm: () async {
-                              Navigator.pop(context);
-                              final rootContext = Navigator.of(
-                                context,
-                                rootNavigator: true,
-                              ).context;
-                              if (!context.mounted) return;
-                              showGlobalLoader(rootContext);
+                              Navigator.pop(confirmDialogContext);
+                              
                               await ref
                                   .read(notesProvider.notifier)
                                   .deleteNote(note.id);
-                              if (!context.mounted) return;
-                              hideGlobalLoader(rootContext);
                             },
                           );
                         },
@@ -115,7 +107,7 @@ class HomeNoteCard extends ConsumerWidget {
                       final isCurrentlyPinned = note.isPinned == true;
 
                       if (!isCurrentlyPinned && pinnedCount >= 4) {
-                        Navigator.pop(context);
+                        Navigator.pop(actionsDialogContext);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('You can pin up to 4 notes only.'),
@@ -126,7 +118,7 @@ class HomeNoteCard extends ConsumerWidget {
                         return;
                       }
 
-                      Navigator.pop(context);
+                      Navigator.pop(actionsDialogContext);
                       ref.read(notesProvider.notifier).togglePin(note.id);
                     },
                   ),

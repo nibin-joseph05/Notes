@@ -1,16 +1,18 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../data/models/note_hive_model.dart';
+import '../../data/services/api_service.dart';
 import '../../domain/entities/note_entity.dart';
 import 'note_repository.dart';
 
 class NoteRepositoryImpl implements NoteRepository {
   final notesBox = Hive.box('notesBox');
-  final firestore = FirebaseFirestore.instance.collection('notes');
+  final _api = ApiService();
 
   @override
   Future<void> saveNote(NoteEntity note) async {
+    print('[REPO] saveNote — id=${note.id} title="${note.title}" pinned=${note.isPinned}');
+
     final existingNote = notesBox.get(note.id);
     String? oldAudioPath;
 
@@ -29,10 +31,8 @@ class NoteRepositoryImpl implements NoteRepository {
       if (shouldDeleteOldAudio && oldAudioFile.existsSync()) {
         try {
           await oldAudioFile.delete();
-          print('Deleted old audio file: $oldAudioPath');
-        } catch (e) {
-          print('Error deleting old audio file: $e');
-        }
+          print('[REPO] saveNote — deleted old audio: $oldAudioPath');
+        } catch (_) {}
       }
     }
 
@@ -50,45 +50,41 @@ class NoteRepositoryImpl implements NoteRepository {
     );
 
     await notesBox.put(note.id, model);
+    print('[REPO] saveNote — written to Hive, syncing to backend...');
 
-    final Map<String, dynamic> firestoreData = {
-      'title': note.title,
-      'body': note.body,
-      'pinned': note.isPinned,
-      'createdAt': note.createdAt.toIso8601String(),
-      'updatedAt': note.updatedAt.toIso8601String(),
-    };
+    _syncToBackend(note);
+  }
 
-    if (note.imageUrl != null && note.imageUrl!.isNotEmpty) {
-      firestoreData['imageUrl'] = note.imageUrl;
-    } else {
-      firestoreData['imageUrl'] = FieldValue.delete();
+  Future<void> _syncToBackend(NoteEntity note) async {
+    try {
+      String? remoteImageUrl = note.imageUrl;
+      if (remoteImageUrl != null && remoteImageUrl.isNotEmpty && !remoteImageUrl.startsWith('http')) {
+        final uploadedUrl = await _api.uploadImage(remoteImageUrl);
+        if (uploadedUrl != null) remoteImageUrl = uploadedUrl;
+      }
+
+      String? remoteAudioUrl = note.audioUrl;
+      if (remoteAudioUrl != null && remoteAudioUrl.isNotEmpty && !remoteAudioUrl.startsWith('http')) {
+        final uploadedUrl = await _api.uploadAudio(remoteAudioUrl);
+        if (uploadedUrl != null) remoteAudioUrl = uploadedUrl;
+      }
+
+      final apiNote = note.copyWith(
+        imageUrl: remoteImageUrl,
+        audioUrl: remoteAudioUrl,
+      );
+
+      await _api.upsertNote(apiNote);
+    } catch (e) {
+      print('[REPO] _syncToBackend failed: $e');
     }
-
-    if (note.bgColor != null) {
-      firestoreData['bgColor'] = note.bgColor;
-    } else {
-      firestoreData['bgColor'] = FieldValue.delete();
-    }
-
-    if (note.fontFamily != null && note.fontFamily!.isNotEmpty) {
-      firestoreData['fontFamily'] = note.fontFamily;
-    } else {
-      firestoreData['fontFamily'] = FieldValue.delete();
-    }
-
-    if (note.audioUrl != null && note.audioUrl!.isNotEmpty) {
-      firestoreData['audioUrl'] = note.audioUrl;
-    } else {
-      firestoreData['audioUrl'] = FieldValue.delete();
-    }
-
-    await firestore.doc(note.id).set(firestoreData, SetOptions(merge: true));
   }
 
   @override
   Future<List<NoteEntity>> getNotes() async {
+    print('[REPO] getNotes — loading from Hive local storage');
     final hiveNotes = notesBox.values.cast<NoteHiveModel>().toList();
+    print('[REPO] getNotes — found ${hiveNotes.length} notes in Hive');
     return hiveNotes
         .map(
           (n) => NoteEntity(
@@ -109,6 +105,8 @@ class NoteRepositoryImpl implements NoteRepository {
 
   @override
   Future<void> deleteNote(String id) async {
+    print('[REPO] deleteNote — id=$id');
+
     final note = notesBox.get(id);
     if (note != null && note is NoteHiveModel) {
       if (note.audioUrl != null && note.audioUrl!.isNotEmpty) {
@@ -116,15 +114,15 @@ class NoteRepositoryImpl implements NoteRepository {
         if (audioFile.existsSync()) {
           try {
             await audioFile.delete();
-            print('Deleted audio file: ${note.audioUrl}');
-          } catch (e) {
-            print('Error deleting audio file: $e');
-          }
+            print('[REPO] deleteNote — deleted audio file: ${note.audioUrl}');
+          } catch (_) {}
         }
       }
     }
 
     await notesBox.delete(id);
-    await firestore.doc(id).delete();
+    print('[REPO] deleteNote — removed from Hive, syncing to backend...');
+
+    _api.deleteNote(id);
   }
 }

@@ -12,7 +12,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notes = ref.watch(notesProvider);
+    final notes = ref.watch(filteredNotesProvider);
     final pinnedNotes = notes.where((e) => e.isPinned).toList();
     final normalNotes = notes.where((e) => !e.isPinned).toList();
 
