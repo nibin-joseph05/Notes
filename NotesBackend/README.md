@@ -1,12 +1,12 @@
-# 🚀 NotesBackend — .NET 8 API
+#  NotesBackend — .NET 8 API
 
 A robust, highly scalable REST API built with **.NET 8** and **C#** to power the Notes Flutter application. This backend is designed with a modern modular architecture, fully supporting an **offline-first sync pattern** for mobile clients.
 
-📌 **Developed by Nibin Joseph**
+ **Developed by Nibin Joseph**
 
 ---
 
-## 🏗️ Architecture & Design Patterns
+##  Architecture & Design Patterns
 
 The backend follows a strict **Modular Monolith** architecture. Instead of grouping files purely by technical concern (e.g., having one massive `Controllers` folder), the codebase is organized by **feature modules** (e.g., `Notes`, `Uploads`). 
 
@@ -19,7 +19,7 @@ This mirrors modern enterprise patterns (similar to Spring Boot domains) and ens
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Framework**: .NET 8 (ASP.NET Core Web API)
 - **Language**: C# 12
@@ -30,7 +30,7 @@ This mirrors modern enterprise patterns (similar to Spring Boot domains) and ens
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
 - **Full CRUD REST API**: Comprehensive endpoints to Create, Read, Update, and Delete notes.
 - **Advanced Data Schema**: Supports rich text, custom background colors (stored as integers), font families, and pinned statuses.
@@ -40,7 +40,7 @@ This mirrors modern enterprise patterns (similar to Spring Boot domains) and ens
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```text
 NotesBackend/
@@ -63,7 +63,7 @@ NotesBackend/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
@@ -99,11 +99,11 @@ NotesBackend/
 ## 👨‍💻 Developer
 
 **Nibin Joseph**  
-📌 Full-Stack & Flutter Developer  
-🔗 Portfolio: [nibin-joseph05.github.io/portfolio-nibin](https://nibin-joseph05.github.io/portfolio-nibin)
+ Full-Stack & Flutter Developer  
+ Portfolio: [nibin-joseph05.github.io/portfolio-nibin](https://nibin-joseph05.github.io/portfolio-nibin)
 
 ---
 
-## 📃 License
+##  License
 
 This project is open for learning and personal use. Redistribution or republishing as-is is not permitted without permission.
