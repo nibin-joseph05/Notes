@@ -366,11 +366,6 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   }
 
   void handleBackPress() {
-    print('=== DEBUG: Checking for changes ===');
-    print('Original audio URL: ${widget.note?.audioUrl}');
-    print('Saved audio: $savedAudio');
-    print('Selected audio: ${selectedAudio?.path}');
-    print('Audio deleted flag: $_audioDeleted');
 
     bool titleChanged =
         titleCtrl.text.trim() != (widget.note?.title ?? "").trim();
@@ -415,7 +410,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
         imageChanged ||
         audioChanged;
 
-    print('Has changes: $hasChanges');
+
 
     if (!hasChanges) {
       Navigator.pop(context);

@@ -7,7 +7,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notes/src/data/models/settings_hive_model.dart';
 
 import 'firebase_options.dart';
-import 'src/core/config/app_config.dart';
 import 'src/core/theme/app_theme.dart';
 import 'src/core/routes/app_router.dart';
 import 'src/core/routes/app_routes.dart';
@@ -17,7 +16,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: '.env');
-  print('[INIT] .env loaded — API base: ${AppConfig.baseUrl}');
 
   try {
     if (Firebase.apps.isEmpty) {
@@ -50,7 +48,6 @@ Future<void> main() async {
     ),
   );
 
-  print('[INIT] App ready — starting Notes');
   runApp(const ProviderScope(child: NotesApp()));
 }
 

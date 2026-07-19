@@ -11,7 +11,6 @@ class NoteRepositoryImpl implements NoteRepository {
 
   @override
   Future<void> saveNote(NoteEntity note) async {
-    print('[REPO] saveNote — id=${note.id} title="${note.title}" pinned=${note.isPinned}');
 
     final existingNote = notesBox.get(note.id);
     String? oldAudioPath;
@@ -50,7 +49,6 @@ class NoteRepositoryImpl implements NoteRepository {
     );
 
     await notesBox.put(note.id, model);
-    print('[REPO] saveNote — written to Hive, syncing to backend...');
 
     _syncToBackend(note);
   }
@@ -82,9 +80,7 @@ class NoteRepositoryImpl implements NoteRepository {
 
   @override
   Future<List<NoteEntity>> getNotes() async {
-    print('[REPO] getNotes — loading from Hive local storage');
     final hiveNotes = notesBox.values.cast<NoteHiveModel>().toList();
-    print('[REPO] getNotes — found ${hiveNotes.length} notes in Hive');
     return hiveNotes
         .map(
           (n) => NoteEntity(
@@ -105,7 +101,6 @@ class NoteRepositoryImpl implements NoteRepository {
 
   @override
   Future<void> deleteNote(String id) async {
-    print('[REPO] deleteNote — id=$id');
 
     final note = notesBox.get(id);
     if (note != null && note is NoteHiveModel) {

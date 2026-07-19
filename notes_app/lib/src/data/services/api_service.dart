@@ -13,8 +13,6 @@ class ApiService {
       receiveTimeout: const Duration(seconds: 10),
       headers: {'Content-Type': 'application/json'},
     ));
-
-    print('[API] ApiService initialized — baseUrl: ${AppConfig.baseUrl}');
   }
 
   Future<List<NoteEntity>> getNotes() async {
@@ -33,9 +31,6 @@ class ApiService {
 
   Future<void> upsertNote(NoteEntity note) async {
     final jsonData = _noteToJson(note);
-    print('[API] POST ${AppConfig.baseUrl}/api/notes');
-    print('[API] REQUEST BODY: $jsonData');
-    
     try {
       await _dio.post('/api/notes', data: jsonData);
       print('[API] POST /api/notes — success id=${note.id}');
