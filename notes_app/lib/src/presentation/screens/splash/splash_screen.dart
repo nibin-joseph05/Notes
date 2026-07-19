@@ -96,57 +96,75 @@ class _SplashPageState extends ConsumerState<SplashPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ScaleTransition(
-              scale: _scaleAnimation,
-              child: Image.asset("assets/logo/logo.webp", width: 150),
-            ),
-            const SizedBox(height: 18),
-            SlideTransition(
-              position: _textSlideAnimation,
-              child: const Text(
-                "Your thoughts in one place",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white70,
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: Image.asset("assets/logo/logo.webp", width: 150),
                 ),
-              ),
+                const SizedBox(height: 18),
+                SlideTransition(
+                  position: _textSlideAnimation,
+                  child: const Text(
+                    "Your thoughts in one place",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white70,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 35),
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: const SizedBox(
+                    width: 35,
+                    height: 35,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.6,
+                      valueColor: AlwaysStoppedAnimation(Color(0xFF121530)),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 35),
-            FadeTransition(
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 30,
+            child: FadeTransition(
               opacity: _fadeAnimation,
-              child : FadeTransition(
-                opacity: _fadeAnimation,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: 35,
-                      height: 35,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.6,
-                        valueColor: AlwaysStoppedAnimation(Color(0xFF121530)),
-                      ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _appVersion,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white38,
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      _appVersion,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white38,
-                      ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "© ABN",
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

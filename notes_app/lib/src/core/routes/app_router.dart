@@ -3,6 +3,7 @@ import '../../presentation/screens/splash/splash_screen.dart';
 import '../../presentation/screens/home/home_screen.dart';
 import '../../presentation/screens/add_note/add_note_screen.dart';
 import '../../presentation/screens/settings/settings_screen.dart';
+import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/error/error_screen.dart';
 import 'app_routes.dart';
 
@@ -17,6 +18,8 @@ class AppRouter {
         return _page(const AddNoteScreen());
       case AppRoutes.settings:
         return _page(const SettingsScreen());
+      case AppRoutes.profile:
+        return _page(const ProfileScreen());
       default:
         return _page(const ErrorScreen());
     }

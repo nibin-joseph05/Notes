@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../providers/settings_provider.dart';
 
 import '../../widgets/common/app_background.dart';
@@ -169,20 +170,26 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   static Widget _footerInfo({required double fontSize}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Center(
-        child: Opacity(
-          opacity: 0.80,
-          child: Text(
-            "Version 1.0.0 • AiBi Notes",
-            style: TextStyle(
-              fontSize: fontSize,
-              color: Colors.white.withOpacity(0.72),
+    return FutureBuilder<PackageInfo>(
+      future: PackageInfo.fromPlatform(),
+      builder: (context, snapshot) {
+        final version = snapshot.hasData ? snapshot.data!.version : "1.0.0";
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: Center(
+            child: Opacity(
+              opacity: 0.80,
+              child: Text(
+                "Version $version",
+                style: TextStyle(
+                  fontSize: fontSize,
+                  color: Colors.white.withOpacity(0.72),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

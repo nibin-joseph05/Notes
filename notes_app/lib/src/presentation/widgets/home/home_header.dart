@@ -44,7 +44,12 @@ class HomeHeader extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 12),
-          const Icon(FontAwesomeIcons.user, size: 22, color: Colors.white70),
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.profile);
+            },
+            child: const Icon(FontAwesomeIcons.user, size: 22, color: Colors.white70),
+          ),
         ],
       ),
     );

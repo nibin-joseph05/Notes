@@ -157,12 +157,27 @@ class HomeScreen extends ConsumerWidget {
                                     ),
                                     const SizedBox(height: 12),
 
-                                    ...List.generate(
-                                      normalNotes.length,
-                                      (index) => HomeNoteCard(
-                                        note: normalNotes[index],
+                                    if (normalNotes.isEmpty)
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 20),
+                                        child: Center(
+                                          child: Text(
+                                            "No other notes yet",
+                                            style: TextStyle(
+                                              color: Colors.white38,
+                                              fontSize: 14,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    else
+                                      ...List.generate(
+                                        normalNotes.length,
+                                        (index) => HomeNoteCard(
+                                          note: normalNotes[index],
+                                        ),
                                       ),
-                                    ),
                                   ],
                                 ),
                               ),
@@ -171,13 +186,17 @@ class HomeScreen extends ConsumerWidget {
 
                         const SizedBox(height: 8),
 
-                        Center(
-                          child: Text(
-                            "Designed & Developed by Nibin",
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: constraints.maxWidth > 400 ? 12 : 11,
-                              fontStyle: FontStyle.italic,
+                        SafeArea(
+                          top: false,
+                          child: Center(
+                            child: Text(
+                              "© ABN",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: constraints.maxWidth > 400 ? 12 : 11,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
                             ),
                           ),
                         ),

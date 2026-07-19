@@ -39,7 +39,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         SettingsState(
           voicePermission: false,
           fontFamily: "Poppins",
-          darkMode: true,
+          darkMode: false,
           wallpaperPath: '',
         ),
       ) {
